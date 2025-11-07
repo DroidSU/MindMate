@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "873817746755",
+    "project_id": "mindmate-bec8f",
+    "storage_bucket": "mindmate-bec8f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873817746755:android:8d7fca1e17e07f955853f6",
+        "android_client_info": {
+          "package_name": "com.sujoy.mindmate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS8IFY2iaq3BOV2zuHsKEXOApeABF0Ph8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
