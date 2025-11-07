@@ -60,9 +60,9 @@ fun App(innerPadding: PaddingValues) {
     LaunchedEffect(Unit) {
         startAnimation = true
         delay(3000) // Wait for the animation to finish + a little extra
-        // TODO: Navigate to the next page here
         val intent = Intent(context, SignInScreen::class.java)
         context.startActivity(intent)
+        (context as ComponentActivity).finish()
     }
 
     Column(

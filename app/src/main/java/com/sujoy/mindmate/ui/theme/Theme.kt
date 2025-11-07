@@ -13,17 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
 //    primary = Purple80,
-    primary = PrimaryTeal,
-    secondary = SecondaryLavenderGray,
-    tertiary = TertiarySlateBlue,
-    background = BackgroundMistyWhite,
-    surface = BackgroundMistyWhite,
-    onPrimary = White,
-    onBackground = TextPrimary,
-    onSurface = TextSecondary,
-)
-
-private val LightColorScheme = lightColorScheme(
     primary = PrimaryAquaDark,
     secondary = SecondaryLilacDark,
     tertiary = TertiaryCharcoalBlueDark,
@@ -32,6 +21,17 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = White,
     onBackground = TextPrimarySingleDark,
     onSurface = TextSecondarySingleDark,
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = PrimaryTeal,
+    secondary = SecondaryLavenderGray,
+    tertiary = TertiarySlateBlue,
+    background = BackgroundMistyWhite,
+    surface = BackgroundMistyWhite,
+    onPrimary = White,
+    onBackground = TextPrimary,
+    onSurface = TextSecondary,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -48,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
 fun MindMateTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
