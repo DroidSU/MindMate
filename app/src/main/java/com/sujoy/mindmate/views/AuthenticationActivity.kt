@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -45,13 +46,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.MindMateTheme
-import com.sujoy.mindmate.vm.SignInViewModel
+import com.sujoy.mindmate.vm.AuthenticationViewModel
 
 class AuthenticationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +70,7 @@ class AuthenticationActivity : ComponentActivity() {
 }
 
 @Composable
-fun SignInPage(viewModel: SignInViewModel = viewModel()) {
+fun SignInPage(viewModel: AuthenticationViewModel = viewModel()) {
     val tabTitles = listOf("Sign In", "Sign Up")
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -158,7 +162,7 @@ fun SignInPagePreview() {
 }
 
 @Composable
-fun Header() {
+private fun Header() {
     Image(
         painter = painterResource(R.drawable.mental_health),
         contentDescription = "MindMate Logo",
@@ -182,7 +186,7 @@ fun Header() {
 }
 
 @Composable
-fun SignInBox(viewModel: SignInViewModel) {
+fun SignInBox(viewModel: AuthenticationViewModel) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val emailError by viewModel.emailError.collectAsState()
@@ -197,14 +201,19 @@ fun SignInBox(viewModel: SignInViewModel) {
         TextField(
             value = email,
             onValueChange = { viewModel.onEmailChanged(it) },
-            label = { Text("Email", fontSize = 16.sp) },
+            label = { Text("Email", fontSize = 16.sp, color = Color.Black) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = emailError != null,
-            supportingText = { emailError?.let { Text(it) } }
+            supportingText = { emailError?.let { Text(it) } },
         )
         TextField(
             value = password,
             onValueChange = { viewModel.onPasswordChanged(it) },
-            label = { Text("Password", fontSize = 16.sp) })
+            label = { Text("Password", fontSize = 16.sp) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = PasswordVisualTransformation(),
+            isError = emailError != null,
+            supportingText = { emailError?.let { Text(it) } })
         Spacer(modifier = Modifier.padding(top = 30.dp))
         Button(
             onClick = { viewModel.onSignInClick() },
@@ -232,7 +241,7 @@ fun SignInBox(viewModel: SignInViewModel) {
 }
 
 @Composable
-fun SignUpBox(viewModel: SignInViewModel) {
+fun SignUpBox(viewModel: AuthenticationViewModel) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val confirmPassword by viewModel.confirmPassword.collectAsState()
@@ -250,6 +259,7 @@ fun SignUpBox(viewModel: SignInViewModel) {
             value = email,
             onValueChange = { viewModel.onEmailChanged(it) },
             label = { Text("Email", fontSize = 16.sp) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = emailError != null,
             supportingText = { emailError?.let { Text(it) } }
         )
@@ -257,6 +267,8 @@ fun SignUpBox(viewModel: SignInViewModel) {
             value = password,
             onValueChange = { viewModel.onPasswordChanged(it) },
             label = { Text("Password", fontSize = 16.sp) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = PasswordVisualTransformation(),
             isError = passwordError != null,
             supportingText = { passwordError?.let { Text(it) } }
         )
@@ -264,6 +276,8 @@ fun SignUpBox(viewModel: SignInViewModel) {
             value = confirmPassword,
             onValueChange = { viewModel.onConfirmPasswordChanged(it) },
             label = { Text("Confirm Password", fontSize = 16.sp) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = VisualTransformation.None,
             isError = passwordError != null,
             supportingText = { passwordError?.let { Text(it) } }
         )

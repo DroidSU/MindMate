@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SignInViewModel : ViewModel() {
+class AuthenticationViewModel : ViewModel() {
     private val authRepository: AuthRepository = AuthRepositoryImpl()
 
     // --- UI State ---

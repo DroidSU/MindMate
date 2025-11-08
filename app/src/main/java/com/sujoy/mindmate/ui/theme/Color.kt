@@ -28,3 +28,6 @@ val TertiaryCharcoalBlueDark = Color(0xFFE2E8F0)
 
 val TextPrimarySingleDark = Color(0xFFE8EEF3)
 val TextSecondarySingleDark = Color(0xFFB0BEC5)
+
+val FABBackground = Color(0xFFFF8A65)
+val FABBackgroundDark = Color(0xFFFFAB91)

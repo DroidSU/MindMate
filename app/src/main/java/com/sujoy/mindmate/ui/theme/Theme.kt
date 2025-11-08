@@ -21,6 +21,7 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = White,
     onBackground = TextPrimarySingleDark,
     onSurface = TextSecondarySingleDark,
+    primaryContainer = FABBackgroundDark
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -32,16 +33,7 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = White,
     onBackground = TextPrimary,
     onSurface = TextSecondary,
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primaryContainer = FABBackground
 )
 
 @Composable
