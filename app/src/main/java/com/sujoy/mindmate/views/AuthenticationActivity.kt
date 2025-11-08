@@ -53,7 +53,7 @@ import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.vm.SignInViewModel
 
-class SignInScreen : ComponentActivity() {
+class AuthenticationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -85,7 +85,7 @@ fun SignInPage(viewModel: SignInViewModel = viewModel()) {
     LaunchedEffect(isAuthenticated) {
         if (isAuthenticated) {
             // Navigate to your main activity/screen
-            context.startActivity(Intent(context, JournalActivity::class.java))
+            context.startActivity(Intent(context, MainActivity::class.java))
             (context as Activity).finish()
         }
     }
