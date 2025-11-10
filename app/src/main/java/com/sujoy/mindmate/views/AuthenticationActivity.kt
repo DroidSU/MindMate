@@ -101,7 +101,7 @@ fun SignInPage(viewModel: AuthenticationViewModel = viewModel()) {
                 Brush.verticalGradient(
                     colors = listOf(
                         MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.background
+                        MaterialTheme.colorScheme.secondary
                     )
                 )
             )

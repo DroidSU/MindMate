@@ -76,7 +76,7 @@ private fun MainScreen(viewModel: MainActivityViewModel = viewModel()) {
                 Brush.verticalGradient(
                     colors = listOf(
                         MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.background
+                        MaterialTheme.colorScheme.secondary
                     )
                 )
             )
