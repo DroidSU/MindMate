@@ -29,21 +29,23 @@ jobs:
         run: |
           echo "🔢 Bumping versionCode and versionName..."
 
+          cd app
+
           # Find current versionCode and increment
-          currentCode=$(grep "versionCode" app/build.gradle | awk '{print $2}')
+          currentCode=$(grep "versionCode" build.gradle | awk '{print $2}')
           newCode=$((currentCode + 1))
           echo "New versionCode: $newCode"
 
           # Find versionName and bump patch number (e.g., 1.0.2 → 1.0.3)
-          currentName=$(grep "versionName" app/build.gradle | awk '{print $2}' | tr -d '"')
+          currentName=$(grep "versionName" build.gradle | awk '{print $2}' | tr -d '"')
           IFS='.' read -r major minor patch <<< "$currentName"
           patch=$((patch + 1))
           newName="$major.$minor.$patch"
           echo "New versionName: $newName"
 
           # Update build.gradle
-          sed -i "s/versionCode [0-9]\+/versionCode $newCode/" app/build.gradle
-          sed -i "s/versionName \".*\"/versionName \"$newName\"/" app/build.gradle
+          sed -i "s/versionCode [0-9]\+/versionCode $newCode/" build.gradle
+          sed -i "s/versionName \".*\"/versionName \"$newName\"/" build.gradle
 
           echo "✅ Version updated to $newName ($newCode)"
           
