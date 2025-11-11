@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -39,7 +48,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.models.AnalyzedMoodObject
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.utils.UtilityMethods
 import com.sujoy.mindmate.vm.NewJournalViewModel
 import kotlinx.coroutines.launch
 
@@ -79,8 +94,16 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
 
 
     // Use LaunchedEffect to show the Snackbar or Bottom Sheet when the result changes
@@ -137,29 +160,56 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(innerPadding)
+                    .fillMaxSize()
+                    .imePadding()
                     .padding(vertical = 15.dp)
-                    .fillMaxSize(),
             ) {
                 Header()
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CalendarToday,
+                        contentDescription = "Date Icon",
+                        tint = Color.Black,
+                        modifier = Modifier.size(16.dp) // Give the icon a size
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        UtilityMethods.formatMillisToWeeks(System.currentTimeMillis()),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Black,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
                 TextField(
                     value = journalBody,
                     onValueChange = { viewModel?.updateJournalBody(it) },
                     placeholder = {
                         Text(
                             "Write anything that's on your mind...",
-                            fontSize = 24.sp,
-                            style = MaterialTheme.typography.bodyLarge
+                            fontSize = 20.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray,
+                            lineHeight = 30.sp
                         )
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .weight(1f)
-                        .clip(RoundedCornerShape(15.dp)),
+                        .clip(RoundedCornerShape(15.dp))
+                        .focusRequester(focusRequester),
                     colors = TextFieldDefaults.colors(
-//                        focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-//                        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                         unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
                         focusedIndicatorColor = MaterialTheme.colorScheme.secondary,
@@ -169,12 +219,12 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         focusedTextColor = MaterialTheme.colorScheme.onSecondary,
                         unfocusedTextColor = MaterialTheme.colorScheme.onSecondary,
                     ),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        lineHeight = 40.sp,
-                        fontSize = 24.sp
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 20.sp,
+                        lineHeight = 30.sp
                     ),
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 if (isAnalyzing) {
                     CircularProgressIndicator()
                 } else {
@@ -187,7 +237,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dp, vertical = 10.dp)
+                            .padding(horizontal = 30.dp, vertical = 12.dp)
                     ) {
                         Text(
                             "Analyze Mood",
@@ -245,19 +295,50 @@ private fun showMoodSheet(moodObject: AnalyzedMoodObject, onDismiss: () -> Unit)
 
 @Composable
 private fun Header() {
+    val context = LocalContext.current
+
     Row(
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-//        Icon(Icons.Filled.ArrowBackIosNew, tint = Color.Black, contentDescription = "Back Icon")
-        Text(
-            "Create New Journal",
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.Black,
-            textAlign = TextAlign.Center,
-            fontSize = 18.sp
-        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .clickable {
+                    (context as NewJournalActivity).finish()
+                }
+                .padding(start = 10.dp)
+                .shadow(8.dp, shape = CircleShape)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
+        ) {
+            Icon(
+                Icons.Rounded.ArrowBackIosNew,
+                tint = Color.Black,
+                contentDescription = "Back Icon",
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+//        Text(
+//            "Create New Journal",
+//            style = MaterialTheme.typography.titleMedium,
+//            color = Color.Black,
+//            textAlign = TextAlign.Center,
+//            fontSize = 18.sp,
+//            modifier = Modifier.weight(1f)
+//        )
+//        Box(
+//            modifier = Modifier
+//                .padding(end = 5.dp)
+//                .clip(CircleShape)
+//                .background(MaterialTheme.colorScheme.primaryContainer)
+//        ) {
+//            Icon(
+//                Icons.Filled.Done,
+//                contentDescription = "Back Icon",
+//                modifier = Modifier.padding(5.dp)
+//            )
+//        }
     }
 }
 
