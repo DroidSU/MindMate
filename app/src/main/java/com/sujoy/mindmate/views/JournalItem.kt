@@ -1,6 +1,7 @@
 package com.sujoy.mindmate.views
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,10 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.models.JournalItemModel
+import com.sujoy.mindmate.ui.theme.AngryColor
+import com.sujoy.mindmate.ui.theme.AnxiousColor
+import com.sujoy.mindmate.ui.theme.HappyColor
+import com.sujoy.mindmate.ui.theme.MotivatedColor
+import com.sujoy.mindmate.ui.theme.NeutralColor
+import com.sujoy.mindmate.ui.theme.SadColor
 import com.sujoy.mindmate.utils.ConstantsManager
 import com.sujoy.mindmate.utils.UtilityMethods
 
@@ -30,13 +38,13 @@ import com.sujoy.mindmate.utils.UtilityMethods
 fun JournalItem(journalItemModel: JournalItemModel) {
 
     val (moodIcon, cardColor) = when (journalItemModel.sentiment) {
-        ConstantsManager.HAPPY -> R.drawable.ic_happy to Color.Green
-        ConstantsManager.SAD -> R.drawable.ic_sad to Color.Yellow
-        ConstantsManager.NEUTRAL -> R.drawable.ic_neutral to Color.Gray
-        ConstantsManager.ANGRY -> R.drawable.ic_angry to Color.Red
-        ConstantsManager.MOTIVATED -> R.drawable.ic_happy to Color.Blue
-        ConstantsManager.ANXIOUS -> R.drawable.ic_happy to Color.Magenta
-        else -> R.drawable.ic_happy to Color.LightGray
+        ConstantsManager.HAPPY -> R.drawable.ic_happy to HappyColor
+        ConstantsManager.SAD -> R.drawable.ic_sad to SadColor
+        ConstantsManager.NEUTRAL -> R.drawable.ic_neutral to NeutralColor
+        ConstantsManager.ANGRY -> R.drawable.ic_angry to AngryColor
+        ConstantsManager.MOTIVATED -> R.drawable.ic_happy to MotivatedColor
+        ConstantsManager.ANXIOUS -> R.drawable.ic_happy to AnxiousColor
+        else -> R.drawable.ic_neutral to NeutralColor
     }
 
     Card(
@@ -46,7 +54,12 @@ fun JournalItem(journalItemModel: JournalItemModel) {
         elevation = CardDefaults.cardElevation(10.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
-        Column(modifier = Modifier.padding(5.dp), verticalArrangement = Arrangement.Center) {
+        Column(
+            modifier = Modifier
+                .padding(5.dp)
+                .background(Color.Transparent),
+            verticalArrangement = Arrangement.Center
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -72,15 +85,18 @@ fun JournalItem(journalItemModel: JournalItemModel) {
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Black,
                         fontWeight = FontWeight.Normal,
-                        modifier = Modifier.padding(top = 4.dp)
+                        modifier = Modifier.padding(top = 2.dp)
                     )
                 }
             }
             Text(
                 journalItemModel.body,
                 style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(vertical = 10.dp, horizontal = 20.dp)
                     .fillMaxWidth()
             )
         }
@@ -95,7 +111,7 @@ fun JournalItemPreview() {
         title = "Feeling calm",
         body = "This is a sample journal body",
         date = System.currentTimeMillis(),
-        sentiment = ConstantsManager.HAPPY
+        sentiment = ConstantsManager.SAD
     )
     JournalItem(journalItemModel = journalItemModel)
 }

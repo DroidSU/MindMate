@@ -31,3 +31,12 @@ val TextSecondarySingleDark = Color(0xFFB0BEC5)
 
 val FABBackground = Color(0xFFFF8A65)
 val FABBackgroundDark = Color(0xFFFFAB91)
+
+val HappyColor = Color(0xFFA8E6CF)
+val SadColor = Color(0xFFD4E4F7)
+val AngryColor = Color(0xFFFFABAB)
+val NeutralColor = Color(0xFFF5F5DC)
+val MotivatedColor = Color(0xFFFFDAB9)
+val AnxiousColor = Color(0xFFE6E6FA)
+val StressedColor = Color(0xFFA3B8C5)
+val RelaxedColor = Color(0xFFBEE3DB)

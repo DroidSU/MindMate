@@ -22,8 +22,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -99,17 +99,21 @@ private fun MainScreen(viewModel: MainActivityViewModel? = viewModel()) {
                     onClick = {
                         viewModel?.onFABClick()
                     },
-                    modifier = Modifier.clip(CircleShape),
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .clip(CircleShape)
+                        .size(60.dp),
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 ) {
                     Icon(
-                        Icons.Filled.Add,
+                        Icons.Rounded.Add,
                         contentDescription = "Add new journal entry",
-                        modifier = Modifier.size(24.dp),
+                        tint = Color.White,
+                        modifier = Modifier.size(36.dp),
                     )
                 }
             },
-            floatingActionButtonPosition = FabPosition.Center // Position it in the center
+            floatingActionButtonPosition = FabPosition.End // Position it in the center
         ) { innerPadding ->
             Column(
                 modifier = Modifier
