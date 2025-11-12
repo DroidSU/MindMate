@@ -23,17 +23,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.models.JournalItemModel
-import com.sujoy.mindmate.models.Moods
+import com.sujoy.mindmate.utils.ConstantsManager
 import com.sujoy.mindmate.utils.UtilityMethods
 
 @Composable
 fun JournalItem(journalItemModel: JournalItemModel) {
+
+    val (moodIcon, cardColor) = when (journalItemModel.sentiment) {
+        ConstantsManager.HAPPY -> R.drawable.ic_happy to Color.Green
+        ConstantsManager.SAD -> R.drawable.ic_sad to Color.Yellow
+        ConstantsManager.NEUTRAL -> R.drawable.ic_neutral to Color.Gray
+        ConstantsManager.ANGRY -> R.drawable.ic_angry to Color.Red
+        ConstantsManager.MOTIVATED -> R.drawable.ic_happy to Color.Blue
+        ConstantsManager.ANXIOUS -> R.drawable.ic_happy to Color.Magenta
+        else -> R.drawable.ic_happy to Color.LightGray
+    }
 
     Card(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(10.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Column(modifier = Modifier.padding(5.dp), verticalArrangement = Arrangement.Center) {
             Row(
@@ -44,12 +55,12 @@ fun JournalItem(journalItemModel: JournalItemModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_happy),
+                    painter = painterResource(moodIcon),
                     contentDescription = "Mood Icon",
                     modifier = Modifier.size(32.dp)
                 )
                 Spacer(modifier = Modifier.width(15.dp))
-                Column() {
+                Column {
                     Text(
                         journalItemModel.title,
                         style = MaterialTheme.typography.titleLarge,
@@ -81,11 +92,10 @@ fun JournalItem(journalItemModel: JournalItemModel) {
 @Composable
 fun JournalItemPreview() {
     val journalItemModel = JournalItemModel(
-        id = "",
         title = "Feeling calm",
         body = "This is a sample journal body",
-        System.currentTimeMillis(),
-        Moods.NEUTRAL
+        date = System.currentTimeMillis(),
+        sentiment = ConstantsManager.HAPPY
     )
     JournalItem(journalItemModel = journalItemModel)
 }

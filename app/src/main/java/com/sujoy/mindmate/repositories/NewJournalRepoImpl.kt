@@ -3,12 +3,14 @@ package com.sujoy.mindmate.repositories
 import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ai.FirebaseAI
+import com.sujoy.mindmate.db.JournalDAO
 import com.sujoy.mindmate.models.AnalyzedMoodObject
+import com.sujoy.mindmate.models.JournalItemModel
 import com.sujoy.mindmate.models.Moods
 import com.sujoy.mindmate.utils.ConstantsManager
 import org.json.JSONObject
 
-class MindMateAppRepoImpl : MindMateAppRepository {
+class NewJournalRepoImpl(private val journalDAO: JournalDAO) : NewJournalRepository {
     private val model = FirebaseAI.getInstance(FirebaseApp.getInstance()).generativeModel(
         ConstantsManager.GEN_MODEL_VERSION
     )
@@ -52,5 +54,9 @@ class MindMateAppRepoImpl : MindMateAppRepository {
             Log.e(ConstantsManager.Error_Tag, "analyzeMood: ${e.message}")
             Result.failure(e)
         }
+    }
+
+    override suspend fun saveJournal(journal: JournalItemModel) {
+        journalDAO.insertJournal(journal)
     }
 }

@@ -240,7 +240,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                             .padding(horizontal = 30.dp, vertical = 12.dp)
                     ) {
                         Text(
-                            "Analyze Mood",
+                            "Create Entry",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onPrimary,
