@@ -6,12 +6,12 @@ class ConstantsManager {
         const val Success_Tag = "MindMate_Success"
         const val GEN_MODEL_VERSION = "gemini-2.5-flash"
 
-        const val HAPPY = "Happy"
-        const val SAD = "Sad"
-        const val ANGRY = "Angry"
-        const val ANXIOUS = "Anxious"
-        const val MOTIVATED = "Movitated"
-        const val NEUTRAL = "Neutral"
+        const val HAPPY = "HAPPY"
+        const val SAD = "SAD"
+        const val ANGRY = "ANGRY"
+        const val ANXIOUS = "ANXIOUS"
+        const val MOTIVATED = "MOTIVATED"
+        const val NEUTRAL = "NEUTRAL"
 
         const val JOURNAL_DB_NAME = "journal_table"
         const val JOURNAL_DB_VERSION = 1

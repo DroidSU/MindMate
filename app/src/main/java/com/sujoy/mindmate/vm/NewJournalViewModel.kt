@@ -19,6 +19,9 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
     private val journalDAO = MindMateDatabase.getDatabase(application).journalDao()
     private val mindMateRepository: NewJournalRepository = NewJournalRepoImpl(journalDAO)
 
+    private val _journalTitle = MutableStateFlow("")
+    val journalTitle: StateFlow<String> = _journalTitle.asStateFlow()
+
     private val _journalBody = MutableStateFlow("")
     val journalBody: StateFlow<String> = _journalBody.asStateFlow()
 
@@ -28,6 +31,9 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
     private val _analysisResult = MutableStateFlow<Result<AnalyzedMoodObject>?>(null)
     val analysisResult: StateFlow<Result<AnalyzedMoodObject>?> = _analysisResult.asStateFlow()
 
+    fun updateJournalTitle(newTitle: String) {
+        _journalTitle.value = newTitle
+    }
 
     fun updateJournalBody(newBody: String) {
         _journalBody.value = newBody
@@ -45,7 +51,7 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
 
                 // Save the journal entry to the database
                 val newJournal = JournalItemModel(
-                    title = moodObject.mood, // Using the mood as the title
+                    title = _journalTitle.value, // Using the mood as the title
                     body = _journalBody.value,
                     date = System.currentTimeMillis(),
                     sentiment = moodObject.mood
@@ -66,7 +72,8 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun onSnackbarShown() {
+    fun onResultShown() {
+        _journalTitle.value = ""
         _journalBody.value = ""
         _analysisResult.value = null
     }
