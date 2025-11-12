@@ -11,5 +11,10 @@ class UtilityMethods {
             val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
             return formatter.format(Date(milliseconds))
         }
+
+        fun formatMillisToWeeks(milliseconds: Long): String {
+            val formatter = SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
+            return formatter.format(Date(milliseconds))
+        }
     }
 }

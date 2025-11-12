@@ -17,7 +17,8 @@
             android:name=".views.NewJournalActivity"
             android:exported="false"
             android:label="@string/title_activity_journal"
-            android:theme="@style/Theme.MindMate" />
+            android:theme="@style/Theme.MindMate"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".views.MainActivity"
             android:exported="false"

@@ -13,12 +13,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -39,7 +49,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,7 +62,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.models.AnalyzedMoodObject
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.utils.UtilityMethods
 import com.sujoy.mindmate.vm.NewJournalViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class NewJournalActivity : ComponentActivity() {
@@ -69,6 +85,9 @@ class NewJournalActivity : ComponentActivity() {
 private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
     val journalBody by viewModel?.journalBody?.collectAsState()
         ?: remember { mutableStateOf("Write anything that's on your mind...") }
+
+    val journalTitle by viewModel?.journalTitle?.collectAsState()
+        ?: remember { mutableStateOf("Write a Title (Optional") }
     val isAnalyzing by viewModel?.isAnalyzing?.collectAsState()
         ?: remember { mutableStateOf(false) }
     val analysisResult by viewModel?.analysisResult?.collectAsState() ?: remember {
@@ -79,8 +98,16 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
 
 
     // Use LaunchedEffect to show the Snackbar or Bottom Sheet when the result changes
@@ -89,6 +116,11 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
             result.fold(
                 onSuccess = {
                     showSheet = true
+
+                    delay(5000)
+                    if (sheetState.isVisible) {
+                        sheetState.hide()
+                    }
                 },
                 onFailure = {
                     scope.launch {
@@ -103,18 +135,18 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
         ModalBottomSheet(
             onDismissRequest = {
                 showSheet = false
-                viewModel?.onSnackbarShown() // Resets the state in VM
+                viewModel?.onResultShown() // Resets the state in VM
             },
             sheetState = sheetState
         ) {
             analysisResult?.getOrNull()?.let {
-                showMoodSheet(
+                ShowMoodSheet(
                     moodObject = it,
                     onDismiss = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
                                 showSheet = false
-                                viewModel?.onSnackbarShown() // Resets the state in VM
+                                viewModel?.onResultShown() // Resets the state in VM
                             }
                         }
                     }
@@ -127,7 +159,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         Scaffold(
             containerColor = Color.Transparent,
@@ -137,44 +169,101 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(innerPadding)
-                    .padding(vertical = 15.dp)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .imePadding()
+                    .padding(vertical = 10.dp)
             ) {
                 Header()
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(
+                            MaterialTheme.colorScheme.surfaceVariant
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.CalendarToday,
+                        contentDescription = "Date Icon",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp) // Give the icon a size
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        UtilityMethods.formatMillisToWeeks(System.currentTimeMillis()),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                TextField(
+                    value = journalTitle,
+                    onValueChange = { viewModel?.updateJournalTitle(it) },
+                    placeholder = {
+                        Text(
+                            "Write a Title (Optional)",
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray,
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 18.sp,
+                    ),
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 TextField(
                     value = journalBody,
                     onValueChange = { viewModel?.updateJournalBody(it) },
                     placeholder = {
                         Text(
                             "Write anything that's on your mind...",
-                            fontSize = 24.sp,
-                            style = MaterialTheme.typography.bodyLarge
+                            fontSize = 20.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray,
+                            lineHeight = 30.sp
                         )
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .weight(1f)
-                        .clip(RoundedCornerShape(15.dp)),
+                        .focusRequester(focusRequester),
+                    shape = RoundedCornerShape(12.dp),
                     colors = TextFieldDefaults.colors(
-//                        focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-//                        disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         focusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.secondary,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
-                        cursorColor = Color.Black,
-                        focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSecondary,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     ),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        lineHeight = 40.sp,
-                        fontSize = 24.sp
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 20.sp,
+                        lineHeight = 30.sp
                     ),
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 if (isAnalyzing) {
                     CircularProgressIndicator()
                 } else {
@@ -184,13 +273,13 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                             viewModel?.onSubmitTap()
                         },
                         elevation = ButtonDefaults.buttonElevation(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dp, vertical = 10.dp)
+                            .padding(horizontal = 30.dp, vertical = 12.dp)
                     ) {
                         Text(
-                            "Analyze Mood",
+                            "Create Entry",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onPrimary,
@@ -204,7 +293,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
 }
 
 @Composable
-private fun showMoodSheet(moodObject: AnalyzedMoodObject, onDismiss: () -> Unit) {
+private fun ShowMoodSheet(moodObject: AnalyzedMoodObject, onDismiss: () -> Unit) {
     val emoji = when (moodObject.mood.uppercase()) {
         "HAPPY" -> "😄"
         "SAD" -> "😢"
@@ -245,25 +334,35 @@ private fun showMoodSheet(moodObject: AnalyzedMoodObject, onDismiss: () -> Unit)
 
 @Composable
 private fun Header() {
+    val context = LocalContext.current
+
     Row(
-        verticalAlignment = Alignment.Top,
-        modifier = Modifier.fillMaxWidth()
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, top = 10.dp)
     ) {
-//        Icon(Icons.Filled.ArrowBackIosNew, tint = Color.Black, contentDescription = "Back Icon")
-        Text(
-            "Create New Journal",
-            modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.Black,
-            textAlign = TextAlign.Center,
-            fontSize = 18.sp
-        )
+        FilledIconButton(
+            onClick = {
+                (context as NewJournalActivity).finish()
+            },
+            shape = CircleShape,
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        ) {
+            Icon(
+                Icons.Rounded.ArrowBackIosNew,
+                contentDescription = "Back Icon",
+            )
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun JournalScreenPreview() {
+fun DefaultPreview() {
     MindMateTheme {
         JournalScreen(null)
     }
