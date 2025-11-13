@@ -6,8 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.sujoy.mindmate.repositories.AuthRepository
-import com.sujoy.mindmate.repositories.AuthRepositoryImpl
+import com.sujoy.mindmate.repositories.MindMateApiRepoImpl
 import com.sujoy.mindmate.utils.ValidationManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AuthenticationViewModel : ViewModel() {
-    private val authRepository: AuthRepository = AuthRepositoryImpl()
+    private val mindMateApiRepository = MindMateApiRepoImpl()
 
     // --- UI State ---
     private val _selectedTabIndex = MutableStateFlow(0)
@@ -51,7 +50,7 @@ class AuthenticationViewModel : ViewModel() {
     val confirmPasswordError: StateFlow<String?> = _confirmPasswordError.asStateFlow()
 
     init {
-        if (authRepository.currentUser != null) {
+        if (mindMateApiRepository.currentUser != null) {
             _isAuthenticated.value = true
         }
     }
@@ -123,7 +122,7 @@ class AuthenticationViewModel : ViewModel() {
                 viewModelScope.launch {
                     _isLoading.value = true
                     _authError.value = null
-                    val result = authRepository.signInWithEmail(email.value, password.value)
+                    val result = mindMateApiRepository.signInWithEmail(email.value, password.value)
 
                     result.onSuccess {
                         _isAuthenticated.value = true
@@ -177,7 +176,7 @@ class AuthenticationViewModel : ViewModel() {
                 viewModelScope.launch {
                     _isLoading.value = true
                     _authError.value = null
-                    val result = authRepository.signUpWithEmail(email.value, password.value)
+                    val result = mindMateApiRepository.signUpWithEmail(email.value, password.value)
 
                     result.onSuccess {
                         _isAuthenticated.value = true

@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.sujoy.mindmate.db.MindMateDatabase
 import com.sujoy.mindmate.models.AnalyzedMoodObject
 import com.sujoy.mindmate.models.JournalItemModel
-import com.sujoy.mindmate.repositories.NewJournalRepoImpl
-import com.sujoy.mindmate.repositories.NewJournalRepository
+import com.sujoy.mindmate.repositories.DatabaseRepository
+import com.sujoy.mindmate.repositories.DatabaseRepositoryImpl
+import com.sujoy.mindmate.repositories.MindMateApiRepoImpl
 import com.sujoy.mindmate.utils.ConstantsManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +17,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class NewJournalViewModel(application: Application) : AndroidViewModel(application) {
+    private val mindMateApiRepository = MindMateApiRepoImpl()
     private val journalDAO = MindMateDatabase.getDatabase(application).journalDao()
-    private val mindMateRepository: NewJournalRepository = NewJournalRepoImpl(journalDAO)
+    private val databaseRepository: DatabaseRepository = DatabaseRepositoryImpl(journalDAO)
 
     private val _journalTitle = MutableStateFlow("")
     val journalTitle: StateFlow<String> = _journalTitle.asStateFlow()
@@ -42,7 +44,7 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
     fun onSubmitTap() {
         viewModelScope.launch {
             _isAnalyzing.value = true
-            val result = mindMateRepository.analyzeMood(_journalBody.value)
+            val result = mindMateApiRepository.analyzeMood(_journalBody.value)
 
             result.onSuccess { moodObject ->
                 _isAnalyzing.value = false
@@ -68,7 +70,7 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun saveJournal(journal: JournalItemModel) {
         viewModelScope.launch {
-            mindMateRepository.saveJournal(journal)
+            databaseRepository.saveJournal(journal)
         }
     }
 

@@ -14,6 +14,7 @@ class ConstantsManager {
         const val NEUTRAL = "NEUTRAL"
 
         const val JOURNAL_DB_NAME = "journal_table"
+        const val JOURNAL_ID = "id"
         const val JOURNAL_DB_VERSION = 1
         const val JOURNAL_DATE = "date"
     }

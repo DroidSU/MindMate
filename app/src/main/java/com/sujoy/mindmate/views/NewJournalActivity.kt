@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -105,6 +106,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
     var showSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        delay(300)
         focusRequester.requestFocus()
         keyboardController?.show()
     }
@@ -173,8 +175,8 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                     .imePadding()
                     .padding(vertical = 10.dp)
             ) {
-                Header()
-                Spacer(modifier = Modifier.height(10.dp))
+//                Header()
+                Spacer(modifier = Modifier.height(20.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -208,7 +210,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                             "Write a Title (Optional)",
                             fontSize = 18.sp,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         )
                     },
                     modifier = Modifier
@@ -216,8 +218,8 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         .padding(horizontal = 10.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
@@ -229,7 +231,11 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         fontSize = 18.sp,
                     ),
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                )
                 TextField(
                     value = journalBody,
                     onValueChange = { viewModel?.updateJournalBody(it) },
@@ -238,7 +244,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                             "Write anything that's on your mind...",
                             fontSize = 20.sp,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                             lineHeight = 30.sp
                         )
                     },
@@ -249,8 +255,8 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         .focusRequester(focusRequester),
                     shape = RoundedCornerShape(12.dp),
                     colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,

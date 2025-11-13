@@ -1,19 +1,45 @@
 package com.sujoy.mindmate.repositories
 
 import android.util.Log
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ai.FirebaseAI
-import com.sujoy.mindmate.db.JournalDAO
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.auth
 import com.sujoy.mindmate.models.AnalyzedMoodObject
-import com.sujoy.mindmate.models.JournalItemModel
 import com.sujoy.mindmate.models.Moods
 import com.sujoy.mindmate.utils.ConstantsManager
+import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
 
-class NewJournalRepoImpl(private val journalDAO: JournalDAO) : NewJournalRepository {
+class MindMateApiRepoImpl() : MindMateApiRepository {
+    private val auth: FirebaseAuth = Firebase.auth
+
     private val model = FirebaseAI.getInstance(FirebaseApp.getInstance()).generativeModel(
         ConstantsManager.GEN_MODEL_VERSION
     )
+
+    override val currentUser: FirebaseUser?
+        get() = auth.currentUser
+
+    override suspend fun signInWithEmail(email: String, password: String): Result<Unit> {
+        return try {
+            auth.signInWithEmailAndPassword(email, password).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun signUpWithEmail(email: String, password: String): Result<Unit> {
+        return try {
+            auth.createUserWithEmailAndPassword(email, password).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     override suspend fun analyzeMood(entryText: String): Result<AnalyzedMoodObject> {
         // 1. Get all enum names as a list of strings and join them separated by a comma
@@ -54,9 +80,5 @@ class NewJournalRepoImpl(private val journalDAO: JournalDAO) : NewJournalReposit
             Log.e(ConstantsManager.Error_Tag, "analyzeMood: ${e.message}")
             Result.failure(e)
         }
-    }
-
-    override suspend fun saveJournal(journal: JournalItemModel) {
-        journalDAO.insertJournal(journal)
     }
 }
