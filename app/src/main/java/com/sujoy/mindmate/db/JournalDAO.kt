@@ -16,4 +16,7 @@ interface JournalDAO {
 
     @Query("SELECT * FROM " + ConstantsManager.JOURNAL_DB_NAME + " ORDER BY " + ConstantsManager.JOURNAL_DATE + " DESC")
     fun getAllJournals(): Flow<List<JournalItemModel>>
+
+    @Query("DELETE FROM " + ConstantsManager.JOURNAL_DB_NAME + " WHERE " + ConstantsManager.JOURNAL_ID + " = :journalId")
+    suspend fun deleteJournalById(journalId: String)
 }

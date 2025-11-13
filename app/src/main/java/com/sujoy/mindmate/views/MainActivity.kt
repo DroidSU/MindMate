@@ -103,12 +103,12 @@ private fun MainScreen(viewModel: MainActivityViewModel? = viewModel()) {
                         .padding(10.dp)
                         .clip(CircleShape)
                         .size(60.dp),
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
                         Icons.Rounded.Add,
                         contentDescription = "Add new journal entry",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(36.dp),
                     )
                 }
@@ -151,7 +151,7 @@ private fun MainScreen(viewModel: MainActivityViewModel? = viewModel()) {
                         }
                     }
                 } else {
-                    JournalList(journals = allJournals!!)
+                    JournalList(journals = allJournals!!, viewModel)
                 }
             }
         }
@@ -163,7 +163,7 @@ private fun Header() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 30.dp, bottom = 10.dp),
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -187,10 +187,8 @@ private fun Header() {
             modifier = Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.15f))
-                .clickable {
-
-                },
+                .background(MaterialTheme.colorScheme.primary)
+                .clickable {},
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -198,7 +196,7 @@ private fun Header() {
                 contentDescription = "Account",
                 modifier = Modifier
                     .size(40.dp)
-                    .shadow(elevation = 8.dp, shape = CircleShape),
+                    .shadow(elevation = 15.dp, shape = CircleShape),
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
@@ -206,10 +204,12 @@ private fun Header() {
 }
 
 @Composable
-private fun JournalList(journals: List<JournalItemModel>) {
+private fun JournalList(journals: List<JournalItemModel>, viewModel: MainActivityViewModel?) {
     LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
-        items(journals) { journal ->
-            JournalItem(journalItemModel = journal)
+        items(items = journals, key = { it.id }) { journal ->
+            JournalItem(journalItemModel = journal) {
+                viewModel?.deleteJournal(journal)
+            }
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
