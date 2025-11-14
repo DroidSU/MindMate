@@ -1,1 +1,5 @@
 /build
+
+# Sensitive files
+google-services.json
+/src/main/res/raw/cloud_speech_credentials.json

@@ -41,6 +41,13 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
 }
 
 dependencies {
@@ -69,4 +76,11 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx) // Kotlin Coroutines support
     ksp(libs.androidx.room.compiler) // Annotation Processor (KSP)
+
+    // Google Cloud Speech-to-Text
+    implementation(platform(libs.google.cloud.libraries.bom))
+    implementation(libs.google.cloud.speech)
+    implementation(libs.grpc.okhttp)
+    implementation(libs.google.auth.library.oauth2.http)
+
 }

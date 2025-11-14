@@ -1,9 +1,14 @@
 package com.sujoy.mindmate.views
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,10 +25,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -40,6 +47,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,6 +58,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -60,9 +69,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.models.AnalyzedMoodObject
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.utils.SpeechToTextHelper
 import com.sujoy.mindmate.utils.UtilityMethods
 import com.sujoy.mindmate.vm.NewJournalViewModel
 import kotlinx.coroutines.delay
@@ -104,6 +115,36 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
 
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val speechToTextHelper = remember { SpeechToTextHelper(context) }
+    val spokenText by speechToTextHelper.spokenText.collectAsState()
+    var isListening by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                isListening = true
+                speechToTextHelper.startListening()
+                Toast.makeText(context, "Speech recognition started", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            speechToTextHelper.destroy()
+        }
+    }
+
+    LaunchedEffect(spokenText) {
+        if (spokenText.isNotBlank()) {
+            viewModel?.updateJournalBody(spokenText)
+        }
+    }
 
     LaunchedEffect(Unit) {
         delay(300)
@@ -223,7 +264,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.primary,
+                        cursorColor = MaterialTheme.colorScheme.onSurface,
                         focusedTextColor = MaterialTheme.colorScheme.onSurface,
                         unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     ),
@@ -260,7 +301,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
-                        cursorColor = MaterialTheme.colorScheme.primary,
+                        cursorColor = MaterialTheme.colorScheme.onSurface,
                         focusedTextColor = MaterialTheme.colorScheme.onSurface,
                         unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                     ),
@@ -273,24 +314,84 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                 if (isAnalyzing) {
                     CircularProgressIndicator()
                 } else {
-                    Button(
-                        enabled = true,
-                        onClick = {
-                            viewModel?.onSubmitTap()
-                        },
-                        elevation = ButtonDefaults.buttonElevation(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dp, vertical = 12.dp)
+                            .padding(bottom = 20.dp, top = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            "Create Entry",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 16.sp
-                        )
+                        // Left Placeholder Button
+                        FilledIconButton(
+                            onClick = { /* TODO: Handle photo attachment */ },
+                            modifier = Modifier
+                                .shadow(elevation = 8.dp, shape = CircleShape)
+                                .size(56.dp),
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        ) {
+                            Icon(Icons.Filled.AddAPhoto, contentDescription = "Add Photo")
+                        }
+
+                        // Middle "Done" Button
+                        FilledIconButton(
+                            onClick = { viewModel?.onSubmitTap() },
+                            modifier = Modifier
+                                .shadow(elevation = 12.dp, shape = CircleShape)
+                                .size(72.dp),
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Icon(
+                                Icons.Filled.Done,
+                                contentDescription = "Create Entry",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+
+                        // Right "Audio" Button
+                        FilledIconButton(
+                            onClick = {
+                                if (isListening) {
+                                    isListening = false
+                                    speechToTextHelper.stopListening()
+                                    Toast.makeText(
+                                        context,
+                                        "Speech recognition stopped",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    if (ContextCompat.checkSelfPermission(
+                                            context,
+                                            Manifest.permission.RECORD_AUDIO
+                                        ) == PackageManager.PERMISSION_GRANTED
+                                    ) {
+                                        isListening = true
+                                        speechToTextHelper.startListening()
+                                        Toast.makeText(
+                                            context,
+                                            "Speech recognition started",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .shadow(elevation = 8.dp, shape = CircleShape)
+                                .size(56.dp),
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = if (isListening) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = if (isListening) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        ) {
+                            Icon(Icons.Filled.Mic, contentDescription = "Record Audio")
+                        }
                     }
                 }
             }

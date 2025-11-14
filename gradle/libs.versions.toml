@@ -15,6 +15,9 @@ lifecycleViewmodelCompose = "2.9.4"
 materialIconsExtended = "1.7.8"
 room = "2.8.3"
 ksp = "2.0.21-1.0.26"
+googleCloudLibrariesBom = "26.33.0"
+grpcOkhttp = "1.53.0"
+googleAuthLibraryOauth2Http = "1.16.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +42,10 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+google-cloud-libraries-bom = { group = "com.google.cloud", name = "libraries-bom", version.ref = "googleCloudLibrariesBom" }
+google-cloud-speech = { group = "com.google.cloud", name = "google-cloud-speech" }
+grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpcOkhttp" }
+google-auth-library-oauth2-http = { group = "com.google.auth", name = "google-auth-library-oauth2-http", version.ref = "googleAuthLibraryOauth2Http" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

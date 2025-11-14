@@ -19,15 +19,14 @@ val TertiarySlateBlue = Color(0xFF3E4C59)
 val TealLight = Color(0xFF9EDCDC)
 val TealDark = Color(0xFF4BA3A8)
 val TextPrimary = Color(0xFF2C3E50)
-val TextSecondary = Color(0xFF607D8B)
+val TextSecondary = Color(0xFF000000)
+val TextPrimarySingleDark = Color(0xFFE8EEF3)
+val TextSecondarySingleDark = Color(0xFFB0BEC5)
 
 val PrimaryAquaDark = Color(0xFF56B3A8)
 val SecondaryLilacDark = Color(0xFF9E9CD6)
 val BackgroundDarkSlate = Color(0xFF1B232A)
 val TertiaryCharcoalBlueDark = Color(0xFFE2E8F0)
-
-val TextPrimarySingleDark = Color(0xFFE8EEF3)
-val TextSecondarySingleDark = Color(0xFFB0BEC5)
 
 val FABBackground = Color(0xFFFF8A65)
 val FABBackgroundDark = Color(0xFFFFAB91)

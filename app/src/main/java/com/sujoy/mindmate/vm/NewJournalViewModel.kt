@@ -42,28 +42,30 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun onSubmitTap() {
-        viewModelScope.launch {
-            _isAnalyzing.value = true
-            val result = mindMateApiRepository.analyzeMood(_journalBody.value)
+        if (_journalBody.value.isNotEmpty() && _journalTitle.value.isNotEmpty()) {
+            viewModelScope.launch {
+                _isAnalyzing.value = true
+                val result = mindMateApiRepository.analyzeMood(_journalBody.value)
 
-            result.onSuccess { moodObject ->
-                _isAnalyzing.value = false
-                _analysisResult.value = Result.success(moodObject)
-                Log.d(ConstantsManager.Success_Tag, "analyzeMood: $moodObject")
+                result.onSuccess { moodObject ->
+                    _isAnalyzing.value = false
+                    _analysisResult.value = Result.success(moodObject)
+                    Log.d(ConstantsManager.Success_Tag, "analyzeMood: $moodObject")
 
-                // Save the journal entry to the database
-                val newJournal = JournalItemModel(
-                    title = _journalTitle.value, // Using the mood as the title
-                    body = _journalBody.value,
-                    date = System.currentTimeMillis(),
-                    sentiment = moodObject.mood
-                )
-                saveJournal(newJournal)
-            }
-            result.onFailure { exception ->
-                _isAnalyzing.value = false
-                _analysisResult.value = Result.failure(exception)
-                Log.e(ConstantsManager.Error_Tag, "analyzeMood: No response text", exception)
+                    // Save the journal entry to the database
+                    val newJournal = JournalItemModel(
+                        title = _journalTitle.value, // Using the mood as the title
+                        body = _journalBody.value,
+                        date = System.currentTimeMillis(),
+                        sentiment = moodObject.mood
+                    )
+                    saveJournal(newJournal)
+                }
+                result.onFailure { exception ->
+                    _isAnalyzing.value = false
+                    _analysisResult.value = Result.failure(exception)
+                    Log.e(ConstantsManager.Error_Tag, "analyzeMood: No response text", exception)
+                }
             }
         }
     }
