@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -36,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.models.JournalItemModel
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.vm.MainActivityViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +76,18 @@ private fun MainScreen(viewModel: MainActivityViewModel? = viewModel()) {
         ?: remember { mutableStateOf(false) }
     val context = LocalContext.current
     val allJournals by viewModel?.allJournals?.collectAsState() ?: remember { mutableStateOf(null) }
+
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(allJournals) {
+        if (!allJournals.isNullOrEmpty()) {
+            coroutineScope.launch {
+                lazyListState.animateScrollToItem(index = 0)
+            }
+        }
+    }
+
 
     LaunchedEffect(isFABClicked) {
         if (isFABClicked) {
@@ -151,7 +167,7 @@ private fun MainScreen(viewModel: MainActivityViewModel? = viewModel()) {
                         }
                     }
                 } else {
-                    JournalList(journals = allJournals!!, viewModel)
+                    JournalList(lazyListState, journals = allJournals!!, viewModel)
                 }
             }
         }
@@ -204,8 +220,12 @@ private fun Header() {
 }
 
 @Composable
-private fun JournalList(journals: List<JournalItemModel>, viewModel: MainActivityViewModel?) {
-    LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
+private fun JournalList(
+    lazyListState: LazyListState,
+    journals: List<JournalItemModel>,
+    viewModel: MainActivityViewModel?
+) {
+    LazyColumn(state = lazyListState, modifier = Modifier.padding(horizontal = 16.dp)) {
         items(items = journals, key = { it.id }) { journal ->
             JournalItem(journalItemModel = journal) {
                 viewModel?.deleteJournal(journal)

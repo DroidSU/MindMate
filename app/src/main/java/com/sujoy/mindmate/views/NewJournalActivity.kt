@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,10 +22,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
@@ -36,13 +39,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -89,6 +96,12 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
 
     val journalTitle by viewModel?.journalTitle?.collectAsState()
         ?: remember { mutableStateOf("Write a Title (Optional") }
+
+    val journalDate by viewModel?.journalDate?.collectAsState()
+        ?: remember { mutableLongStateOf(System.currentTimeMillis()) }
+
+    var showDatePicker by remember { mutableStateOf(false) }
+
     val isAnalyzing by viewModel?.isAnalyzing?.collectAsState()
         ?: remember { mutableStateOf(false) }
     val analysisResult by viewModel?.analysisResult?.collectAsState() ?: remember {
@@ -96,6 +109,14 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
             null
         )
     }
+
+    val context = LocalContext.current
+    val shouldFinish by viewModel?.finishActivity?.collectAsState() ?: remember {
+        mutableStateOf(
+            false
+        )
+    }
+
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -105,6 +126,12 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
 
+    LaunchedEffect(shouldFinish) {
+        if (shouldFinish) {
+            (context as NewJournalActivity).finish()
+        }
+    }
+
     LaunchedEffect(Unit) {
         delay(300)
         focusRequester.requestFocus()
@@ -112,17 +139,12 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
     }
 
 
-    // Use LaunchedEffect to show the Snackbar or Bottom Sheet when the result changes
+    // LaunchedEffect to show the Snackbar or Bottom Sheet when the result changes
     LaunchedEffect(analysisResult) {
         analysisResult?.let { result ->
             result.fold(
                 onSuccess = {
                     showSheet = true
-
-                    delay(5000)
-                    if (sheetState.isVisible) {
-                        sheetState.hide()
-                    }
                 },
                 onFailure = {
                     scope.launch {
@@ -133,11 +155,40 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
         }
     }
 
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(initialSelectedDateMillis = journalDate)
+
+        DatePickerDialog(
+            onDismissRequest = {
+                showDatePicker = false
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDatePicker = false
+                    viewModel?.updateJournalDate(
+                        datePickerState.selectedDateMillis ?: System.currentTimeMillis()
+                    )
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDatePicker = false
+                }) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
     if (showSheet) {
         ModalBottomSheet(
             onDismissRequest = {
                 showSheet = false
-                viewModel?.onResultShown() // Resets the state in VM
+                viewModel?.onResultShown()
             },
             sheetState = sheetState
         ) {
@@ -148,8 +199,9 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
                                 showSheet = false
-                                viewModel?.onResultShown() // Resets the state in VM
                             }
+
+                            viewModel?.onResultShown()
                         }
                     }
                 )
@@ -185,6 +237,9 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                             MaterialTheme.colorScheme.surfaceVariant
                         )
                         .padding(horizontal = 12.dp, vertical = 8.dp)
+                        .clickable {
+                            showDatePicker = true
+                        }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.CalendarToday,
@@ -194,7 +249,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        UtilityMethods.formatMillisToWeeks(System.currentTimeMillis()),
+                        UtilityMethods.formatMillisToWeeks(journalDate),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 14.sp,
@@ -273,24 +328,46 @@ private fun JournalScreen(viewModel: NewJournalViewModel? = viewModel()) {
                 if (isAnalyzing) {
                     CircularProgressIndicator()
                 } else {
-                    Button(
-                        enabled = true,
-                        onClick = {
-                            viewModel?.onSubmitTap()
-                        },
-                        elevation = ButtonDefaults.buttonElevation(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 30.dp, vertical = 12.dp)
+                            .padding(bottom = 20.dp, top = 10.dp, start = 20.dp, end = 20.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            "Create Entry",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 16.sp
-                        )
+//                        FilledIconButton(
+//                            onClick = { /* TODO: Handle photo attachment */ },
+//                            modifier = Modifier
+//                                .shadow(elevation = 8.dp, shape = CircleShape)
+//                                .size(48.dp),
+//                            colors = IconButtonDefaults.filledIconButtonColors(
+//                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+//                                contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+//                            )
+//                        ) {
+//                            Icon(
+//                                Icons.Filled.AddAPhoto,
+//                                contentDescription = "Add Photo",
+//                                modifier = Modifier.size(24.dp)
+//                            )
+//                        }
+
+                        FilledIconButton(
+                            onClick = { viewModel?.onSubmitTap() },
+                            modifier = Modifier
+                                .shadow(elevation = 12.dp, shape = CircleShape)
+                                .size(72.dp),
+                            colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Icon(
+                                Icons.Filled.Done,
+                                contentDescription = "Create Entry",
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
                 }
             }

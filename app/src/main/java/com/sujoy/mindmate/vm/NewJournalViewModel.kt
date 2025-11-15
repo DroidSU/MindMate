@@ -27,11 +27,17 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
     private val _journalBody = MutableStateFlow("")
     val journalBody: StateFlow<String> = _journalBody.asStateFlow()
 
+    private val _journalDate = MutableStateFlow(0L)
+    val journalDate: StateFlow<Long> = _journalDate.asStateFlow()
+
     private val _isAnalyzing = MutableStateFlow(false)
     val isAnalyzing: StateFlow<Boolean> = _isAnalyzing.asStateFlow()
 
     private val _analysisResult = MutableStateFlow<Result<AnalyzedMoodObject>?>(null)
     val analysisResult: StateFlow<Result<AnalyzedMoodObject>?> = _analysisResult.asStateFlow()
+
+    private val _finishActivity = MutableStateFlow(false)
+    val finishActivity = _finishActivity.asStateFlow()
 
     fun updateJournalTitle(newTitle: String) {
         _journalTitle.value = newTitle
@@ -40,6 +46,11 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
     fun updateJournalBody(newBody: String) {
         _journalBody.value = newBody
     }
+
+    fun updateJournalDate(newDate: Long) {
+        _journalDate.value = newDate
+    }
+
 
     fun onSubmitTap() {
         viewModelScope.launch {
@@ -55,7 +66,7 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
                 val newJournal = JournalItemModel(
                     title = _journalTitle.value, // Using the mood as the title
                     body = _journalBody.value,
-                    date = System.currentTimeMillis(),
+                    date = _journalDate.value,
                     sentiment = moodObject.mood
                 )
                 saveJournal(newJournal)
@@ -78,5 +89,6 @@ class NewJournalViewModel(application: Application) : AndroidViewModel(applicati
         _journalTitle.value = ""
         _journalBody.value = ""
         _analysisResult.value = null
+        _finishActivity.value = true
     }
 }
