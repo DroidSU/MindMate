@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -14,12 +15,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,18 +37,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -100,18 +109,23 @@ private fun OnboardingFlow(viewModel: OnboardingViewModel? = viewModel()) {
                     fadeIn() togetherWith fadeOut()
                 }, label = "Onboarding Animation"
             ) { step ->
-                Column(
-                    modifier = Modifier.fillMaxSize(),
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .imePadding(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    when (step) {
-                        0 -> WelcomeStep(onGetStarted = { viewModel?.nextStep() })
-                        1 -> QuestionsStep(onContinue = { viewModel?.nextStep() })
-                        2 -> SummaryStep(onFinish = {
-                            val intent = Intent(context, NewJournalActivity::class.java)
-                            context.startActivity(intent)
-                        })
+                    item {
+                        when (step) {
+                            0 -> WelcomeStep(onGetStarted = { viewModel?.nextStep() })
+                            1 -> QuestionsStep(onContinue = { viewModel?.nextStep() })
+                            2 -> SummaryStep(onFinish = {
+                                val intent = Intent(context, NewJournalActivity::class.java)
+                                context.startActivity(intent)
+                            })
+                        }
                     }
                 }
             }
@@ -181,10 +195,36 @@ fun WelcomeStep(onGetStarted: () -> Unit) {
 }
 
 @Composable
+fun SuggestionChip(text: String, isSelected: Boolean, onClick: () -> Unit) {
+    val backgroundColor =
+        if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.tertiaryContainer
+    val contentColor =
+        if (isSelected) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onTertiaryContainer
+
+    Box(
+        modifier = Modifier
+            .background(backgroundColor, RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        Text(text = text, color = contentColor, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
 fun QuestionsStep(onContinue: () -> Unit) {
-    var habits by remember { mutableStateOf("") }
-    var moods by remember { mutableStateOf("") }
+    var habits by remember { mutableStateOf(TextFieldValue("")) }
+    val selectedHabits = remember { mutableStateListOf<String>() }
+    val habitSuggestions = listOf("Exercise", "Meditate", "Read", "Journal", "Hydrate", "Sleep")
+
+    var moods by remember { mutableStateOf(TextFieldValue("")) }
+    val selectedMoods = remember { mutableStateListOf<String>() }
+    val moodSuggestions = listOf("Stressed", "Tired", "Anxious", "Happy", "Neutral", "Relaxed")
+
     var reminders by remember { mutableStateOf("") }
+
+    var activeSuggestionFor by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -202,8 +242,20 @@ fun QuestionsStep(onContinue: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = habits,
-            onValueChange = { habits = it },
-            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { value ->
+                habits = value
+                val currentHabits =
+                    value.text.split(',').map(String::trim).filter(String::isNotEmpty)
+                selectedHabits.clear()
+                selectedHabits.addAll(currentHabits.filter { it in habitSuggestions })
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    if (focusState.isFocused) {
+                        activeSuggestionFor = "habits"
+                    }
+                },
             placeholder = { Text("e.g., Exercise, Meditate, Read") },
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -214,6 +266,48 @@ fun QuestionsStep(onContinue: () -> Unit) {
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
             )
         )
+
+        AnimatedVisibility(visible = activeSuggestionFor == "habits") {
+            Column {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Suggestions (select up to 3):",
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    habitSuggestions.forEach { habit ->
+                        SuggestionChip(
+                            text = habit,
+                            isSelected = habit in selectedHabits,
+                            onClick = {
+                                if (habit in selectedHabits) {
+                                    selectedHabits.remove(habit)
+                                } else {
+                                    if (selectedHabits.size < 3) {
+                                        selectedHabits.add(habit)
+                                    }
+                                }
+                                val newText = selectedHabits.joinToString(", ")
+                                habits = TextFieldValue(
+                                    text = if (selectedHabits.isNotEmpty()) "$newText, " else "",
+                                    selection = TextRange(if (selectedHabits.isNotEmpty()) newText.length + 2 else 0)
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
@@ -225,8 +319,20 @@ fun QuestionsStep(onContinue: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = moods,
-            onValueChange = { moods = it },
-            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { value ->
+                moods = value
+                val currentMoods =
+                    value.text.split(',').map(String::trim).filter(String::isNotEmpty)
+                selectedMoods.clear()
+                selectedMoods.addAll(currentMoods.filter { it in moodSuggestions })
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    if (focusState.isFocused) {
+                        activeSuggestionFor = "moods"
+                    }
+                },
             placeholder = { Text("e.g., Stressed, Tired, Anxious") },
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -237,6 +343,48 @@ fun QuestionsStep(onContinue: () -> Unit) {
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
             )
         )
+
+        AnimatedVisibility(visible = activeSuggestionFor == "moods") {
+            Column {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Suggestions (select up to 3):",
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    moodSuggestions.forEach { mood ->
+                        SuggestionChip(
+                            text = mood,
+                            isSelected = mood in selectedMoods,
+                            onClick = {
+                                if (mood in selectedMoods) {
+                                    selectedMoods.remove(mood)
+                                } else {
+                                    if (selectedMoods.size < 3) {
+                                        selectedMoods.add(mood)
+                                    }
+                                }
+                                val newText = selectedMoods.joinToString(", ")
+                                moods = TextFieldValue(
+                                    text = if (selectedMoods.isNotEmpty()) "$newText, " else "",
+                                    selection = TextRange(if (selectedMoods.isNotEmpty()) newText.length + 2 else 0)
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
@@ -249,7 +397,13 @@ fun QuestionsStep(onContinue: () -> Unit) {
         OutlinedTextField(
             value = reminders,
             onValueChange = { reminders = it },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { focusState ->
+                    if (focusState.isFocused) {
+                        activeSuggestionFor = null
+                    }
+                },
             placeholder = { Text("e.g., In the morning, Before bed") },
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
