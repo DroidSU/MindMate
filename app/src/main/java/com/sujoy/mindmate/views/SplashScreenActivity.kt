@@ -63,16 +63,20 @@ fun App(innerPadding: PaddingValues) {
         startAnimation = true
         delay(3000) // Wait for the animation to finish + a little extra
         val auth = Firebase.auth
-        if(auth.currentUser == null){
-            val intent = Intent(context, AuthenticationActivity::class.java)
-            context.startActivity(intent)
-            (context as ComponentActivity).finish()
-        }
-        else{
-            val intent = Intent(context, MainActivity::class.java)
-            context.startActivity(intent)
-            (context as ComponentActivity).finish()
-        }
+//        if(auth.currentUser == null){
+//            val intent = Intent(context, AuthenticationActivity::class.java)
+//            context.startActivity(intent)
+//            (context as ComponentActivity).finish()
+//        }
+//        else{
+//            val intent = Intent(context, MainActivity::class.java)
+//            context.startActivity(intent)
+//            (context as ComponentActivity).finish()
+//        }
+
+        val intent = Intent(context, OnboardingScreen::class.java)
+        context.startActivity(intent)
+        (context as ComponentActivity).finish()
     }
 
     Column(

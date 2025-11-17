@@ -2,4 +2,7 @@
     <string name="app_name">MindMate</string>
     <string name="title_activity_sign_in_screen">SignInScreen</string>
     <string name="title_activity_journal">JournalActivity</string>
+    <string name="title_activity_onboarding_screen">OnboardingScreen</string>
+    <string name="get_started">Get Started</string>
+    <string name="welcome_step_header">Let’s understand your emotional world.</string>
 </resources>

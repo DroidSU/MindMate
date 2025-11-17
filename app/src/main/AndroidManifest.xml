@@ -14,6 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MindMate">
         <activity
+            android:name=".views.OnboardingScreen"
+            android:exported="false"
+            android:label="@string/title_activity_onboarding_screen"
+            android:theme="@style/Theme.MindMate" />
+        <activity
             android:name=".views.NewJournalActivity"
             android:exported="false"
             android:label="@string/title_activity_journal"
