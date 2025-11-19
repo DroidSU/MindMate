@@ -9,4 +9,6 @@
     <string name="next_pick_moods">Next: Pick Moods</string>
     <string name="finish_and_create_baseline">Finish</string>
     <string name="get_reminders_for_your_mood_patterns">Get reminders for your mood patterns.</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_onboarding_summary">OnboardingSummaryActivity</string>
 </resources>

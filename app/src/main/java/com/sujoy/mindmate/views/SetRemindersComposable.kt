@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.EventRepeat
 import androidx.compose.material.icons.outlined.ReportProblem
@@ -31,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -40,7 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
@@ -124,28 +127,28 @@ fun SetReminder(onContinue: () -> Unit) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .padding(start = 28.dp, end = 28.dp, bottom = 10.dp)
-                .shadow(10.dp, RoundedCornerShape(24.dp))
+                .size(64.dp)
+                .shadow(12.dp, CircleShape)
+                .clip(CircleShape)
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
                             LocalGradientColors.current.buttonStart,
                             LocalGradientColors.current.buttonEnd
                         )
-                    ),
-                    shape = RoundedCornerShape(24.dp)
+                    )
                 )
-                .clickable(onClick = {})
+                .clickable(onClick = onContinue)
         ) {
-            Text(
-                stringResource(R.string.finish_and_create_baseline),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.padding(10.dp)
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = "Next Step: Summary",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
             )
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
 
         Text(
             text = "You can change these later.",

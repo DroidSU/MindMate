@@ -14,7 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MindMate">
         <activity
-            android:name=".views.OnboardingScreen"
+            android:name=".views.OnboardingSummaryActivity"
+            android:exported="false"
+            android:label="@string/title_activity_onboarding_summary"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".views.HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".views.OnboardingActivity"
             android:exported="false"
             android:label="@string/title_activity_onboarding_screen"
             android:theme="@style/Theme.MindMate" />

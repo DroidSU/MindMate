@@ -74,7 +74,7 @@ fun App(innerPadding: PaddingValues) {
 //            (context as ComponentActivity).finish()
 //        }
 
-        val intent = Intent(context, OnboardingScreen::class.java)
+        val intent = Intent(context, OnboardingActivity::class.java)
         context.startActivity(intent)
         (context as ComponentActivity).finish()
     }

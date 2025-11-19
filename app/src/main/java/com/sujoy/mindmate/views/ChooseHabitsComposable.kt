@@ -17,9 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,22 +38,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.sujoy.mindmate.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.vm.OnboardingViewModel
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit) {
-    val selectedHabits = remember { mutableStateListOf<String>() }
+fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit, viewModel: OnboardingViewModel) {
+    val selectedHabits by viewModel.selectedHabits.collectAsState()
     val habitSuggestions = remember {
         mutableStateListOf(
             "Workout",
@@ -82,7 +85,7 @@ fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit) {
                     onClick = {
                         if (customHabit.isNotBlank()) {
                             if (selectedHabits.size < 3) {
-                                selectedHabits.add(customHabit)
+                                viewModel.addHabit(customHabit)
                             }
                             if (!habitSuggestions.contains(customHabit)) {
                                 habitSuggestions.add(customHabit)
@@ -159,10 +162,10 @@ fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit) {
                         isSelected = habit in selectedHabits,
                         onClick = {
                             if (habit in selectedHabits) {
-                                selectedHabits.remove(habit)
+                                viewModel.removeHabit(habit)
                             } else {
                                 if (selectedHabits.size < 3) {
-                                    selectedHabits.add(habit)
+                                    viewModel.addHabit(habit)
                                 }
                             }
                         }
@@ -185,33 +188,33 @@ fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit) {
 
         AnimatedVisibility(
             visible = selectedHabits.isNotEmpty(),
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 20.dp),
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it })
         ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
-                    .shadow(10.dp, RoundedCornerShape(24.dp))
+                    .size(64.dp)
+                    .shadow(12.dp, CircleShape)
+                    .clip(CircleShape)
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
                                 LocalGradientColors.current.buttonStart,
                                 LocalGradientColors.current.buttonEnd
                             )
-                        ),
-                        shape = RoundedCornerShape(24.dp)
+                        )
                     )
                     .clickable(onClick = onContinue)
             ) {
-                Text(
-                    stringResource(R.string.next_pick_moods),
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(10.dp)
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = "Next Step: Pick Moods",
+                    tint = Color.White,
+                    modifier = Modifier.size(32.dp)
                 )
             }
         }
@@ -234,7 +237,7 @@ private fun ChooseHabitsPreview() {
                     )
                 )
         ) {
-            ChooseHabits(onContinue = {}, onBack = {})
+            ChooseHabits(onContinue = {}, onBack = {}, viewModel = viewModel())
         }
     }
 }
