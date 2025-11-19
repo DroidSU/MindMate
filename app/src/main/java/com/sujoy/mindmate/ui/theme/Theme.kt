@@ -19,13 +19,13 @@ data class GradientColors(
 )
 
 private val LightGradientColors = GradientColors(
-    buttonStart = md_theme_light_button_color_primary,
-    buttonEnd = md_theme_light_button_color_secondary
+    buttonStart = md_theme_light_button_primary,
+    buttonEnd = md_theme_light_button_secondary
 )
 
 private val DarkGradientColors = GradientColors(
-    buttonStart = md_theme_dark_button_color_primary,
-    buttonEnd = md_theme_dark_button_color_secondary
+    buttonStart = md_theme_dark_button_primary,
+    buttonEnd = md_theme_dark_button_secondary
 )
 
 val LocalGradientColors = staticCompositionLocalOf { LightGradientColors }
@@ -57,7 +57,7 @@ private val DarkColorScheme = darkColorScheme(
     inverseOnSurface = md_theme_dark_inverseOnSurface,
     inverseSurface = md_theme_dark_inverseSurface,
     inversePrimary = md_theme_dark_inversePrimary,
-    surfaceTint = md_theme_dark_surfaceTint,
+    surfaceTint = md_theme_dark_surface,
     outlineVariant = md_theme_dark_outlineVariant,
     scrim = md_theme_dark_scrim,
 )
@@ -89,7 +89,7 @@ private val LightColorScheme = lightColorScheme(
     inverseOnSurface = md_theme_light_inverseOnSurface,
     inverseSurface = md_theme_light_inverseSurface,
     inversePrimary = md_theme_light_inversePrimary,
-    surfaceTint = md_theme_light_surfaceTint,
+    surfaceTint = md_theme_light_surface,
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
 )

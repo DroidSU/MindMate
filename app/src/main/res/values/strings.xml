@@ -5,4 +5,8 @@
     <string name="title_activity_onboarding_screen">OnboardingScreen</string>
     <string name="get_started">Get Started</string>
     <string name="welcome_step_header">Let’s understand your emotional world.</string>
+    <string name="next_set_reminders">Next: Set Reminders</string>
+    <string name="next_pick_moods">Next: Pick Moods</string>
+    <string name="finish_and_create_baseline">Finish</string>
+    <string name="get_reminders_for_your_mood_patterns">Get reminders for your mood patterns.</string>
 </resources>

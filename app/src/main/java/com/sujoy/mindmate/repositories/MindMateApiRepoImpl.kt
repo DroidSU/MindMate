@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.sujoy.mindmate.models.AnalyzedMoodObject
-import com.sujoy.mindmate.models.Moods
+import com.sujoy.mindmate.models.MoodsEnum
 import com.sujoy.mindmate.utils.ConstantsManager
 import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
@@ -43,7 +43,7 @@ class MindMateApiRepoImpl() : MindMateApiRepository {
 
     override suspend fun analyzeMood(entryText: String): Result<AnalyzedMoodObject> {
         // 1. Get all enum names as a list of strings and join them separated by a comma
-        val moodOptions = Moods.entries.joinToString(", ") { it.name }
+        val moodOptions = MoodsEnum.entries.joinToString(", ") { it.name }
 
 
         val prompt = """

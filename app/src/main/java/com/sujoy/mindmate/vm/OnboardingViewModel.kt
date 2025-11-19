@@ -9,7 +9,7 @@ class OnboardingViewModel : ViewModel() {
     val currentStep: StateFlow<Int> = _currentStep
 
     fun nextStep() {
-        if (_currentStep.value < 2) { // We have 3 steps (0, 1, 2)
+        if (_currentStep.value < 3) { // We have 4 steps (0, 1, 2, 3)
             _currentStep.value++
         }
     }
@@ -18,5 +18,15 @@ class OnboardingViewModel : ViewModel() {
         if (_currentStep.value > 0) {
             _currentStep.value--
         }
+    }
+
+    fun setCurrentStep(step: Int) {
+        if (step in 0..3) {
+            _currentStep.value = step
+        }
+    }
+
+    fun finishOnboarding() {
+
     }
 }
