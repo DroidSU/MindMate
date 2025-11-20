@@ -12,4 +12,5 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_onboarding_summary">OnboardingSummaryActivity</string>
     <string name="reminder_opt_3">At a fixed time daily</string>
+    <string name="start_daily_check">Start Daily Check</string>
 </resources>

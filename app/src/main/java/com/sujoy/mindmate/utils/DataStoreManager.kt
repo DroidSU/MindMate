@@ -3,6 +3,7 @@ package com.sujoy.mindmate.utils
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -20,19 +21,22 @@ class DataStoreManager(private val context: Context) {
         val SELECTED_MOODS_KEY = stringSetPreferencesKey("selected_moods")
         val REMINDER_TYPE_KEY = stringPreferencesKey("reminder_type")
         val REMINDER_TIME_KEY = longPreferencesKey("reminder_time")
+        val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
     }
 
     suspend fun saveOnboardingSelections(
         selectedHabits: Set<String>,
         selectedMoods: Set<String>,
         reminderType: String,
-        reminderTime: Long
+        reminderTime: Long,
+        onboardingCompleted: Boolean
     ) {
         context.datastore.edit { preferences ->
             preferences[SELECTED_HABITS_KEY] = selectedHabits
             preferences[SELECTED_MOODS_KEY] = selectedMoods
             preferences[REMINDER_TYPE_KEY] = reminderType
             preferences[REMINDER_TIME_KEY] = reminderTime
+            preferences[ONBOARDING_COMPLETED_KEY] = onboardingCompleted
         }
     }
 
@@ -44,6 +48,11 @@ class DataStoreManager(private val context: Context) {
     suspend fun getSelectedMoods(): Set<String> {
         val preferences = context.datastore.data.first()
         return preferences[SELECTED_MOODS_KEY] ?: emptySet()
+    }
+
+    suspend fun isOnboardingCompleted(): Boolean {
+        val preferences = context.datastore.data.first()
+        return preferences[ONBOARDING_COMPLETED_KEY] ?: false
     }
 
 

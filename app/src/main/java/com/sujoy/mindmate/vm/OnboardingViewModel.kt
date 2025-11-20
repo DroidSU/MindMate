@@ -85,7 +85,8 @@ class OnboardingViewModel(application: Application) : AndroidViewModel(applicati
                 selectedHabits = _selectedHabits.value,
                 selectedMoods = _selectedMoods.value,
                 reminderType = _reminderOption.value,
-                reminderTime = _reminderTime.value
+                reminderTime = _reminderTime.value,
+                onboardingCompleted = true
             )
         }
     }

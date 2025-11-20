@@ -13,20 +13,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
@@ -42,16 +37,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.vm.OnboardingViewModel
@@ -129,163 +126,156 @@ fun OnboardingSummaryContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .alpha(alphaAnimation.value),
+                    .alpha(alphaAnimation.value)
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(60.dp))
 
                 Text(
-                    text = "Ready to Begin?",
-                    style = MaterialTheme.typography.displaySmall,
+                    text = "We’ll watch these moods for these habits",
+                    style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-
-                Text(
-                    text = "Here's your personalized setup",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                // Split into two columns for a more dynamic layout
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                // Habits Card
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(12.dp, RoundedCornerShape(28.dp)),
+                    shape = RoundedCornerShape(28.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                    ),
                 ) {
-                    // Habits Card
-                    Card(
+                    Column(
                         modifier = Modifier
-                            .weight(1f)
-                            .height(280.dp),
-                        shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                alpha = 0.8f
-                            )
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Text(
+                            text = "Habits",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(
+                                10.dp,
+                                Alignment.CenterHorizontally
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.padding(horizontal = 8.dp)
                         ) {
-                            Text(
-                                text = "Habits",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(
-                                    8.dp,
-                                    Alignment.CenterHorizontally
-                                ),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                selectedHabits.forEach { habit ->
-                                    SuggestionChip(
-                                        onClick = { },
-                                        label = {
-                                            Text(
-                                                habit,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
-                                        },
-                                        colors = SuggestionChipDefaults.suggestionChipColors(
-                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                            labelColor = MaterialTheme.colorScheme.onTertiaryContainer
-                                        ),
-                                        border = null,
-                                        shape = CircleShape
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    // Moods Card
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(280.dp),
-                        shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(
-                                alpha = 0.8f
-                            )
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Moods",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            FlowRow(
-                                horizontalArrangement = Arrangement.spacedBy(
-                                    8.dp,
-                                    Alignment.CenterHorizontally
-                                ),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                selectedMoods.forEach { mood ->
-                                    SuggestionChip(
-                                        onClick = { },
-                                        label = {
-                                            Text(
-                                                mood,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
-                                        },
-                                        colors = SuggestionChipDefaults.suggestionChipColors(
-                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                            labelColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                        ),
-                                        border = null,
-                                        shape = CircleShape
-                                    )
-                                }
+                            selectedHabits.forEach { habit ->
+                                SuggestionChip(
+                                    onClick = { },
+                                    label = {
+                                        Text(
+                                            habit,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    },
+                                    colors = SuggestionChipDefaults.suggestionChipColors(
+                                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                        labelColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                    ),
+                                    border = null,
+                                    shape = CircleShape
+                                )
                             }
                         }
                     }
                 }
 
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Moods Card
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(12.dp, RoundedCornerShape(28.dp)),
+                    shape = RoundedCornerShape(28.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+                    ),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Moods",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(
+                                10.dp,
+                                Alignment.CenterHorizontally
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            selectedMoods.forEach { mood ->
+                                SuggestionChip(
+                                    onClick = { },
+                                    label = {
+                                        Text(
+                                            mood,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    },
+                                    colors = SuggestionChipDefaults.suggestionChipColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                    ),
+                                    border = null,
+                                    shape = CircleShape
+                                )
+                            }
+                        }
+                    }
+                }
+
+
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Redesigned Floating Action Button style CTA
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(64.dp)
-                        .shadow(12.dp, CircleShape)
-                        .clip(CircleShape)
+                        .fillMaxWidth(0.8f)
+                        .shadow(10.dp, RoundedCornerShape(24.dp))
                         .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
                                     LocalGradientColors.current.buttonStart,
                                     LocalGradientColors.current.buttonEnd
                                 )
-                            )
+                            ),
+                            shape = RoundedCornerShape(24.dp)
                         )
                         .clickable(onClick = onStartClick)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Start Daily Check",
-                        tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                    Text(
+                        stringResource(R.string.start_daily_check),
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(10.dp)
                     )
                 }
+
 
                 Spacer(modifier = Modifier.height(40.dp))
             }
@@ -296,7 +286,7 @@ fun OnboardingSummaryContent(
 @Preview(showBackground = true)
 @Composable
 private fun OnboardingSummaryPreview() {
-    val sampleHabits = setOf("Yoga", "Reading")
+    val sampleHabits = setOf("Yoga", "Exercise")
     val sampleMoods = setOf("Happy", "Calm", "Focused")
 
     MindMateTheme {

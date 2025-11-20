@@ -176,6 +176,16 @@ fun SetReminder(onContinue: () -> Unit, onboardingViewModel: OnboardingViewModel
 
         Spacer(modifier = Modifier.weight(1f))
 
+        Text(
+            text = "You can change these later.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(bottom = 10.dp)
+        )
+
+        Spacer(modifier = Modifier.height(2.dp))
+
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -199,15 +209,6 @@ fun SetReminder(onContinue: () -> Unit, onboardingViewModel: OnboardingViewModel
                 modifier = Modifier.size(32.dp)
             )
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(
-            text = "You can change these later.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
     }
 }
 

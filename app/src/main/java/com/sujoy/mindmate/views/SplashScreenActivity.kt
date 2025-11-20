@@ -31,6 +31,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.utils.DataStoreManager
 import kotlinx.coroutines.delay
 
 class SplashScreenActivity : ComponentActivity() {
@@ -74,9 +75,15 @@ fun App(innerPadding: PaddingValues) {
 //            (context as ComponentActivity).finish()
 //        }
 
-        val intent = Intent(context, OnboardingActivity::class.java)
-        context.startActivity(intent)
-        (context as ComponentActivity).finish()
+        if (DataStoreManager(context).isOnboardingCompleted()) {
+            val intent = Intent(context, HomeActivity::class.java)
+            context.startActivity(intent)
+            (context as ComponentActivity).finish()
+        } else {
+            val intent = Intent(context, OnboardingActivity::class.java)
+            context.startActivity(intent)
+            (context as ComponentActivity).finish()
+        }
     }
 
     Column(
