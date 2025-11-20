@@ -16,5 +16,10 @@ class UtilityMethods {
             val formatter = SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
             return formatter.format(Date(milliseconds))
         }
+
+        fun formatMillisToTime(milliseconds: Long): String {
+            val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+            return formatter.format(Date(milliseconds))
+        }
     }
 }

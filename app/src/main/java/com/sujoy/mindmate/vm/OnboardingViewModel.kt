@@ -3,11 +3,13 @@ package com.sujoy.mindmate.vm
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.sujoy.mindmate.utils.ConstantsManager
 import com.sujoy.mindmate.utils.DataStoreManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class OnboardingViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -21,6 +23,12 @@ class OnboardingViewModel(application: Application) : AndroidViewModel(applicati
 
     private val _selectedMoods = MutableStateFlow<Set<String>>(emptySet())
     val selectedMoods: StateFlow<Set<String>> = _selectedMoods.asStateFlow()
+
+    private val _reminderOption = MutableStateFlow(ConstantsManager.REMINDER_OPT_2)
+    val reminderOption: StateFlow<String> = _reminderOption.asStateFlow()
+
+    private val _reminderTime = MutableStateFlow(Calendar.getInstance().timeInMillis)
+    val reminderTime: StateFlow<Long> = _reminderTime.asStateFlow()
 
     fun nextStep() {
         if (_currentStep.value < 3) { // We have 4 steps (0, 1, 2, 3)
@@ -56,13 +64,28 @@ class OnboardingViewModel(application: Application) : AndroidViewModel(applicati
         _selectedMoods.value -= mood
     }
 
+    fun setReminderOption(option: String) {
+        _reminderOption.value = option
+    }
+
+    fun setReminderTime(hour: Int, minute: Int) {
+        val cal = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+        }
+
+        _reminderTime.value = cal.timeInMillis
+    }
+
+
+
     fun saveSelections() {
         viewModelScope.launch {
             dataStoreManager.saveOnboardingSelections(
-                selectedHabits = selectedHabits.value,
-                selectedMoods = selectedMoods.value,
-                reminderType = 0,
-                reminderTime = 0
+                selectedHabits = _selectedHabits.value,
+                selectedMoods = _selectedMoods.value,
+                reminderType = _reminderOption.value,
+                reminderTime = _reminderTime.value
             )
         }
     }

@@ -17,5 +17,9 @@ class ConstantsManager {
         const val JOURNAL_ID = "id"
         const val JOURNAL_DB_VERSION = 1
         const val JOURNAL_DATE = "date"
+
+        const val REMINDER_OPT_1 = "Only when mood is risky"
+        const val REMINDER_OPT_2 = "Daily check-in + mood checks"
+        const val REMINDER_OPT_3 = "Fixed Daily Time"
     }
 }

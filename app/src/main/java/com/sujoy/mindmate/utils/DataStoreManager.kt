@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -18,14 +18,14 @@ class DataStoreManager(private val context: Context) {
     companion object {
         val SELECTED_HABITS_KEY = stringSetPreferencesKey("selected_habits")
         val SELECTED_MOODS_KEY = stringSetPreferencesKey("selected_moods")
-        val REMINDER_TYPE_KEY = intPreferencesKey("reminder_type")
+        val REMINDER_TYPE_KEY = stringPreferencesKey("reminder_type")
         val REMINDER_TIME_KEY = longPreferencesKey("reminder_time")
     }
 
     suspend fun saveOnboardingSelections(
         selectedHabits: Set<String>,
         selectedMoods: Set<String>,
-        reminderType: Int,
+        reminderType: String,
         reminderTime: Long
     ) {
         context.datastore.edit { preferences ->

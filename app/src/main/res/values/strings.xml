@@ -11,4 +11,5 @@
     <string name="get_reminders_for_your_mood_patterns">Get reminders for your mood patterns.</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_onboarding_summary">OnboardingSummaryActivity</string>
+    <string name="reminder_opt_3">At a fixed time daily</string>
 </resources>

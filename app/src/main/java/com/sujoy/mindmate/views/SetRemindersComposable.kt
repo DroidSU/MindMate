@@ -24,10 +24,15 @@ import androidx.compose.material.icons.outlined.ReportProblem
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +49,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.utils.ConstantsManager
+import com.sujoy.mindmate.utils.UtilityMethods
+import com.sujoy.mindmate.vm.OnboardingViewModel
+import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SetReminder(onContinue: () -> Unit) {
-    var selectedOption by remember { mutableStateOf("Daily check-in + mood checks") }
+fun SetReminder(onContinue: () -> Unit, onboardingViewModel: OnboardingViewModel? = viewModel()) {
+    val selectedOption by onboardingViewModel?.reminderOption?.collectAsState() ?: remember {
+        mutableStateOf(
+            ConstantsManager.REMINDER_OPT_2
+        )
+    }
+
+    val selectedTime by onboardingViewModel?.reminderTime?.collectAsState() ?: remember {
+        mutableStateOf(
+            Calendar.getInstance().timeInMillis
+        )
+    }
+
+
+    var showTimePicker by remember { mutableStateOf(false) }
+    val timeCalendar = Calendar.getInstance().apply { timeInMillis = selectedTime }
+    val timePickerState = rememberTimePickerState(
+        initialHour = timeCalendar.get(Calendar.HOUR_OF_DAY),
+        initialMinute = timeCalendar.get(Calendar.MINUTE)
+    )
+
 
     Column(
         modifier = Modifier
@@ -86,40 +117,61 @@ fun SetReminder(onContinue: () -> Unit) {
                 iconColor = Color(0xFFE57373), // A softer red
                 title = "Risky Moods Only",
                 subtitle = "Nudges for risky patterns",
-                isSelected = selectedOption == "Only when mood is risky",
-                onClick = { selectedOption = "Only when mood is risky" }
+                isSelected = selectedOption == ConstantsManager.REMINDER_OPT_1,
+                onClick = { onboardingViewModel?.setReminderOption(ConstantsManager.REMINDER_OPT_1) }
             )
             ReminderOption(
                 icon = Icons.Outlined.EventRepeat,
                 iconColor = Color(0xFF81C784), // A gentle green
                 title = "Daily + Mood Checks",
                 subtitle = "Check-in and pattern nudges (Recommended)",
-                isSelected = selectedOption == "Daily check-in + mood checks",
-                onClick = { selectedOption = "Daily check-in + mood checks" }
+                isSelected = selectedOption == ConstantsManager.REMINDER_OPT_2,
+                onClick = { onboardingViewModel?.setReminderOption(ConstantsManager.REMINDER_OPT_2) }
             )
             ReminderOption(
                 icon = Icons.Outlined.Schedule,
                 iconColor = Color(0xFF64B5F6), // A calming blue
                 title = "Fixed Daily Time",
                 subtitle = "Choose a specific time for your reminder",
-                isSelected = selectedOption == "At a fixed time daily",
+                isSelected = selectedOption == ConstantsManager.REMINDER_OPT_3,
                 onClick = {
-                    selectedOption = "At a fixed time daily"
-                    // TODO: Open time picker
+                    showTimePicker = true
+                    onboardingViewModel?.setReminderOption(ConstantsManager.REMINDER_OPT_3)
                 }
             )
         }
 
 
-        if (selectedOption == "At a fixed time daily") {
-            // Placeholder for time picker.
+        if (selectedOption == ConstantsManager.REMINDER_OPT_3) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Time picker should be displayed here.",
+                text = "Selected Time: ${UtilityMethods.formatMillisToTime(selectedTime)}",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth()
             )
+
+
+            if (showTimePicker) {
+                CustomTimePickerDialog(
+                    onDismissRequest = { showTimePicker = false },
+                    onConfirm = {
+                        val cal = Calendar.getInstance()
+                        cal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                        cal.set(Calendar.MINUTE, timePickerState.minute)
+                        cal.isLenient = false
+                        onboardingViewModel?.setReminderTime(
+                            timePickerState.hour,
+                            timePickerState.minute
+                        )
+                        showTimePicker = false
+                    },
+                ) {
+                    TimePicker(state = timePickerState)
+                }
+            }
+
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -156,6 +208,45 @@ fun SetReminder(onContinue: () -> Unit) {
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
             modifier = Modifier.padding(bottom = 10.dp)
         )
+    }
+}
+
+@Composable
+private fun CustomTimePickerDialog(
+    title: String = "Select Time",
+    onDismissRequest: () -> Unit,
+    onConfirm: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Dialog(onDismissRequest = onDismissRequest) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
+                    text = title,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center
+                )
+                content()
+                Row(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .fillMaxWidth()
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    TextButton(onClick = onDismissRequest) { Text("Cancel") }
+                    TextButton(onClick = onConfirm) { Text("OK") }
+                }
+            }
+        }
     }
 }
 
@@ -226,7 +317,7 @@ private fun SetReminderPreview() {
                     )
                 )
         ) {
-            SetReminder(onContinue = {})
+            SetReminder(onContinue = {}, onboardingViewModel = null)
         }
     }
 }
