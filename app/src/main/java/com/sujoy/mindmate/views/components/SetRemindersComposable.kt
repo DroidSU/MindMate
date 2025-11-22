@@ -1,4 +1,4 @@
-package com.sujoy.mindmate.views
+package com.sujoy.mindmate.views.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

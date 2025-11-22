@@ -14,38 +14,38 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MindMate">
         <activity
-            android:name=".views.OnboardingSummaryActivity"
+            android:name=".views.screens.OnboardingSummaryActivity"
             android:exported="false"
             android:label="@string/title_activity_onboarding_summary"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".views.HomeActivity"
+            android:name=".views.screens.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".views.OnboardingActivity"
+            android:name=".views.screens.OnboardingActivity"
             android:exported="false"
             android:label="@string/title_activity_onboarding_screen"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".views.NewJournalActivity"
+            android:name=".views.screens.NewJournalActivity"
             android:exported="false"
             android:label="@string/title_activity_journal"
             android:theme="@style/Theme.MindMate"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".views.MainActivity"
+            android:name=".views.screens.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_journal"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".views.AuthenticationActivity"
+            android:name=".views.screens.AuthenticationActivity"
             android:exported="false"
             android:label="@string/title_activity_sign_in_screen"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".views.SplashScreenActivity"
+            android:name=".views.screens.SplashScreenActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.MindMate">

@@ -1,4 +1,4 @@
-package com.sujoy.mindmate.views
+package com.sujoy.mindmate.views.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -416,7 +416,7 @@ private fun ShowMoodSheet(moodObject: AnalyzedMoodObject, onDismiss: () -> Unit)
 }
 
 @Composable
-private fun Header() {
+private fun NewJournalHeader() {
     val context = LocalContext.current
 
     Row(

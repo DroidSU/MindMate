@@ -1,4 +1,4 @@
-package com.sujoy.mindmate.views
+package com.sujoy.mindmate.views.screens
 
 import android.content.Intent
 import android.os.Bundle
@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.models.JournalItemModel
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.views.components.JournalItem
 import com.sujoy.mindmate.vm.MainActivityViewModel
 import kotlinx.coroutines.launch
 
@@ -136,7 +137,7 @@ private fun MainScreen(viewModel: MainActivityViewModel? = viewModel()) {
                     .padding(innerPadding)
                     .fillMaxSize()
             ) {
-                Header()
+                MainHeader()
                 Spacer(modifier = Modifier.height(16.dp))
                 if (allJournals.isNullOrEmpty()) {
                     Box(
@@ -175,7 +176,7 @@ private fun MainScreen(viewModel: MainActivityViewModel? = viewModel()) {
 }
 
 @Composable
-private fun Header() {
+private fun MainHeader() {
     Row(
         modifier = Modifier
             .fillMaxWidth()

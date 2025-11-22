@@ -1,4 +1,4 @@
-package com.sujoy.mindmate.views
+package com.sujoy.mindmate.views.screens
 
 import android.content.Intent
 import android.os.Bundle

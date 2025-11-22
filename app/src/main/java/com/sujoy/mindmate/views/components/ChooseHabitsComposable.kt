@@ -1,4 +1,4 @@
-package com.sujoy.mindmate.views
+package com.sujoy.mindmate.views.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -8,26 +8,34 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,26 +47,63 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sujoy.mindmate.models.MoodDataModel
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.vm.OnboardingViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: OnboardingViewModel) {
-    val moods = listOf(
-        MoodDataModel("Happy", "😊", "Feeling joyful and positive"),
-        MoodDataModel("Anxious", "😬", "Feeling worried, nervous, or uneasy"),
-        MoodDataModel("Tired", "😴", "Feeling sleepy or drained of energy"),
-        MoodDataModel("Lonely", "😔", "Feeling sad from being alone"),
-        MoodDataModel("Stressed", "😣", "Feeling overwhelmed and under pressure"),
-        MoodDataModel("Bored", "😐", "Feeling unoccupied and uninterested"),
-        MoodDataModel("Angry", "😠", "Feeling annoyed or displeasure"),
-        MoodDataModel("Calm", "😌", "Feeling peaceful and untroubled")
-    )
+fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit, viewModel: OnboardingViewModel) {
+    val selectedHabits by viewModel.selectedHabits.collectAsState()
+    val habitSuggestions = remember {
+        mutableStateListOf(
+            "Workout",
+            "Meditation",
+            "Cook dinner",
+            "Write",
+            "Sleep on time",
+            "No social scrolling"
+        )
+    }
+    var showCustomHabitDialog by remember { mutableStateOf(false) }
 
-    val selectedMoods by viewModel.selectedMoods.collectAsState()
+    if (showCustomHabitDialog) {
+        var customHabit by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showCustomHabitDialog = false },
+            title = { Text("Add a custom habit") },
+            text = {
+                OutlinedTextField(
+                    value = customHabit,
+                    onValueChange = { customHabit = it },
+                    label = { Text("Habit name") },
+                    singleLine = true
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (customHabit.isNotBlank()) {
+                            if (selectedHabits.size < 3) {
+                                viewModel.addHabit(customHabit)
+                            }
+                            if (!habitSuggestions.contains(customHabit)) {
+                                habitSuggestions.add(customHabit)
+                            }
+                            showCustomHabitDialog = false
+                        }
+                    }
+                ) {
+                    Text("Add")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showCustomHabitDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -69,7 +114,7 @@ fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardin
             onClick = onBack,
             modifier = Modifier
                 .size(36.dp)
-                .align(Alignment.TopStart)
+                .align(alignment = Alignment.TopStart)
         ) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
@@ -82,11 +127,13 @@ fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardin
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 40.dp, start = 24.dp, end = 24.dp),
+                .padding(top = 36.dp, start = 24.dp, end = 24.dp)
+                .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Which moods break your habits?",
+                text = "Which habits matter most?",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Center,
@@ -94,37 +141,53 @@ fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardin
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Pick moods that usually make you skip those habits.",
+                text = "Pick up to 3 habits to protect.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(
+                    8.dp,
+                    Alignment.CenterHorizontally
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(moods) { mood ->
-                    MoodCard(
-                        mood = mood,
-                        isSelected = mood.name in selectedMoods,
+                habitSuggestions.forEach { habit ->
+                    SuggestionChip(
+                        text = habit,
+                        isSelected = habit in selectedHabits,
                         onClick = {
-                            if (mood.name in selectedMoods) {
-                                viewModel.removeMood(mood.name)
+                            if (habit in selectedHabits) {
+                                viewModel.removeHabit(habit)
                             } else {
-                                viewModel.addMood(mood.name)
+                                if (selectedHabits.size < 3) {
+                                    viewModel.addHabit(habit)
+                                }
                             }
                         }
                     )
                 }
+                SuggestionChip(
+                    text = "+ Add custom",
+                    isSelected = false,
+                    onClick = { showCustomHabitDialog = true }
+                )
             }
+            Spacer(modifier = Modifier.height(18.dp))
+            Text(
+                text = "Pro Tip: Choose the ones you actually try to keep.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                fontWeight = FontWeight.SemiBold
+            )
         }
 
         AnimatedVisibility(
-            visible = selectedMoods.isNotEmpty(),
+            visible = selectedHabits.isNotEmpty(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 20.dp),
@@ -149,7 +212,7 @@ fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardin
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = "Next Step: Set Reminders",
+                    contentDescription = "Next Step: Pick Moods",
                     tint = Color.White,
                     modifier = Modifier.size(32.dp)
                 )
@@ -160,7 +223,7 @@ fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardin
 
 @Preview(showBackground = true)
 @Composable
-private fun ChooseMoodsPreview() {
+private fun ChooseHabitsPreview() {
     MindMateTheme {
         Box(
             modifier = Modifier
@@ -174,7 +237,7 @@ private fun ChooseMoodsPreview() {
                     )
                 )
         ) {
-            ChooseMoods(onContinue = {}, onBack = {}, viewModel = viewModel())
+            ChooseHabits(onContinue = {}, onBack = {}, viewModel = viewModel())
         }
     }
 }

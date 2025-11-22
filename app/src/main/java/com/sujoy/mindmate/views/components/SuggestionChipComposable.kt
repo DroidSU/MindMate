@@ -1,4 +1,4 @@
-package com.sujoy.mindmate.views
+package com.sujoy.mindmate.views.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

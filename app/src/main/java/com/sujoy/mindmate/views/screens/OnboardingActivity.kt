@@ -1,4 +1,4 @@
-package com.sujoy.mindmate.views
+package com.sujoy.mindmate.views.screens
 
 import android.content.Context
 import android.content.Intent
@@ -35,6 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.views.components.ChooseHabits
+import com.sujoy.mindmate.views.components.ChooseMoods
+import com.sujoy.mindmate.views.components.GetStarted
+import com.sujoy.mindmate.views.components.SetReminder
 import com.sujoy.mindmate.vm.OnboardingViewModel
 
 class OnboardingActivity : ComponentActivity() {
