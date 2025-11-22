@@ -1,17 +1,14 @@
 package com.sujoy.mindmate.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 data class GradientColors(
     val buttonStart: Color,
@@ -30,7 +27,7 @@ private val DarkGradientColors = GradientColors(
 
 val LocalGradientColors = staticCompositionLocalOf { LightGradientColors }
 
-private val DarkColorScheme = darkColorScheme(
+val DarkColorScheme = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
@@ -62,7 +59,7 @@ private val DarkColorScheme = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-private val LightColorScheme = lightColorScheme(
+val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -94,23 +91,239 @@ private val LightColorScheme = lightColorScheme(
     scrim = md_theme_light_scrim,
 )
 
+// --- Happy Theme Color Schemes ---
+
+val HappyLightColorScheme = lightColorScheme(
+    primary = happy_theme_light_primary,
+    onPrimary = happy_theme_light_onPrimary,
+    primaryContainer = happy_theme_light_primaryContainer,
+    onPrimaryContainer = happy_theme_light_onPrimaryContainer,
+    secondary = happy_theme_light_secondary,
+    onSecondary = happy_theme_light_onSecondary,
+    secondaryContainer = happy_theme_light_secondaryContainer,
+    onSecondaryContainer = happy_theme_light_onSecondaryContainer,
+    background = happy_theme_light_background,
+    onBackground = happy_theme_light_onBackground,
+    surface = happy_theme_light_surface,
+    onSurface = happy_theme_light_onSurface,
+    surfaceVariant = happy_theme_light_surfaceVariant,
+    onSurfaceVariant = happy_theme_light_onSurfaceVariant,
+    // --- Reusing default values for consistency ---
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+val HappyDarkColorScheme = darkColorScheme(
+    primary = happy_theme_dark_primary,
+    onPrimary = happy_theme_dark_onPrimary,
+    primaryContainer = happy_theme_dark_primaryContainer,
+    onPrimaryContainer = happy_theme_dark_onPrimaryContainer,
+    secondary = happy_theme_dark_secondary,
+    onSecondary = happy_theme_dark_onSecondary,
+    secondaryContainer = happy_theme_dark_secondaryContainer,
+    onSecondaryContainer = happy_theme_dark_onSecondaryContainer,
+    background = happy_theme_dark_background,
+    onBackground = happy_theme_dark_onBackground,
+    surface = happy_theme_dark_surface,
+    onSurface = happy_theme_dark_onSurface,
+    surfaceVariant = happy_theme_dark_surfaceVariant,
+    onSurfaceVariant = happy_theme_dark_onSurfaceVariant,
+    // --- Reusing default values ---
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
+
+// --- Calm Theme Color Schemes ---
+
+val CalmLightColorScheme = lightColorScheme(
+    primary = calm_theme_light_primary,
+    onPrimary = calm_theme_light_onPrimary,
+    primaryContainer = calm_theme_light_primaryContainer,
+    onPrimaryContainer = calm_theme_light_onPrimaryContainer,
+    secondary = calm_theme_light_secondary,
+    onSecondary = calm_theme_light_onSecondary,
+    background = calm_theme_light_background,
+    onBackground = calm_theme_light_onBackground,
+    surface = calm_theme_light_surface,
+    onSurface = calm_theme_light_onSurface,
+    surfaceVariant = calm_theme_light_surfaceVariant,
+    onSurfaceVariant = calm_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+val CalmDarkColorScheme = darkColorScheme(
+    primary = calm_theme_dark_primary,
+    onPrimary = calm_theme_dark_onPrimary,
+    primaryContainer = calm_theme_dark_primaryContainer,
+    onPrimaryContainer = calm_theme_dark_onPrimaryContainer,
+    secondary = calm_theme_dark_secondary,
+    onSecondary = calm_theme_dark_onSecondary,
+    background = calm_theme_dark_background,
+    onBackground = calm_theme_dark_onBackground,
+    surface = calm_theme_dark_surface,
+    onSurface = calm_theme_dark_onSurface,
+    surfaceVariant = calm_theme_dark_surfaceVariant,
+    onSurfaceVariant = calm_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
+
+// --- Angry Theme Color Schemes ---
+
+val AngryLightColorScheme = lightColorScheme(
+    primary = angry_theme_light_primary,
+    onPrimary = angry_theme_light_onPrimary,
+    primaryContainer = angry_theme_light_primaryContainer,
+    onPrimaryContainer = angry_theme_light_onPrimaryContainer,
+    secondary = angry_theme_light_secondary,
+    onSecondary = angry_theme_light_onSecondary,
+    background = angry_theme_light_background,
+    onBackground = angry_theme_light_onBackground,
+    surface = angry_theme_light_surface,
+    onSurface = angry_theme_light_onSurface,
+    surfaceVariant = angry_theme_light_surfaceVariant,
+    onSurfaceVariant = angry_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+
+val AngryDarkColorScheme = darkColorScheme(
+    primary = angry_theme_dark_primary,
+    onPrimary = angry_theme_dark_onPrimary,
+    primaryContainer = angry_theme_dark_primaryContainer,
+    onPrimaryContainer = angry_theme_dark_onPrimaryContainer,
+    secondary = angry_theme_dark_secondary,
+    onSecondary = angry_theme_dark_onSecondary,
+    background = angry_theme_dark_background,
+    onBackground = angry_theme_dark_onBackground,
+    surface = angry_theme_dark_surface,
+    onSurface = angry_theme_dark_onSurface,
+    surfaceVariant = angry_theme_dark_surfaceVariant,
+    onSurfaceVariant = angry_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
+
+
+// --- Sad Theme Color Schemes ---
+
+val SadLightColorScheme = lightColorScheme(
+    primary = sad_theme_light_primary,
+    onPrimary = sad_theme_light_onPrimary,
+    primaryContainer = sad_theme_light_primaryContainer,
+    onPrimaryContainer = sad_theme_light_onPrimaryContainer,
+    secondary = sad_theme_light_secondary,
+    onSecondary = sad_theme_light_onSecondary,
+    background = sad_theme_light_background,
+    onBackground = sad_theme_light_onBackground,
+    surface = sad_theme_light_surface,
+    onSurface = sad_theme_light_onSurface,
+    surfaceVariant = sad_theme_light_surfaceVariant,
+    onSurfaceVariant = sad_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+val SadDarkColorScheme = darkColorScheme(
+    primary = sad_theme_dark_primary,
+    onPrimary = sad_theme_dark_onPrimary,
+    primaryContainer = sad_theme_dark_primaryContainer,
+    onPrimaryContainer = sad_theme_dark_onPrimaryContainer,
+    secondary = sad_theme_dark_secondary,
+    onSecondary = sad_theme_dark_onSecondary,
+    background = sad_theme_dark_background,
+    onBackground = sad_theme_dark_onBackground,
+    surface = sad_theme_dark_surface,
+    onSurface = sad_theme_dark_onSurface,
+    surfaceVariant = sad_theme_dark_surfaceVariant,
+    onSurfaceVariant = sad_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
+
+// --- Anxious Theme Color Schemes ---
+
+val AnxiousLightColorScheme = lightColorScheme(
+    primary = anxious_theme_light_primary,
+    onPrimary = anxious_theme_light_onPrimary,
+    primaryContainer = anxious_theme_light_primaryContainer,
+    onPrimaryContainer = anxious_theme_light_onPrimaryContainer,
+    secondary = anxious_theme_light_secondary,
+    onSecondary = anxious_theme_light_onSecondary,
+    background = anxious_theme_light_background,
+    onBackground = anxious_theme_light_onBackground,
+    surface = anxious_theme_light_surface,
+    onSurface = anxious_theme_light_onSurface,
+    surfaceVariant = anxious_theme_light_surfaceVariant,
+    onSurfaceVariant = anxious_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+val AnxiousDarkColorScheme = darkColorScheme(
+    primary = anxious_theme_dark_primary,
+    onPrimary = anxious_theme_dark_onPrimary,
+    primaryContainer = anxious_theme_dark_primaryContainer,
+    onPrimaryContainer = anxious_theme_dark_onPrimaryContainer,
+    secondary = anxious_theme_dark_secondary,
+    onSecondary = anxious_theme_dark_onSecondary,
+    background = anxious_theme_dark_background,
+    onBackground = anxious_theme_dark_onBackground,
+    surface = anxious_theme_dark_surface,
+    onSurface = anxious_theme_dark_onSurface,
+    surfaceVariant = anxious_theme_dark_surfaceVariant,
+    onSurfaceVariant = anxious_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
+
+
+
+
+
+
+
+
 @Composable
 fun MindMateTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
+    colorScheme: ColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     val gradientColors = if (darkTheme) DarkGradientColors else LightGradientColors
 
     CompositionLocalProvider(LocalGradientColors provides gradientColors) {

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +54,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,7 +71,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.models.MoodLog
+import com.sujoy.mindmate.ui.theme.AngryDarkColorScheme
+import com.sujoy.mindmate.ui.theme.AngryLightColorScheme
+import com.sujoy.mindmate.ui.theme.AnxiousDarkColorScheme
+import com.sujoy.mindmate.ui.theme.AnxiousLightColorScheme
+import com.sujoy.mindmate.ui.theme.CalmDarkColorScheme
+import com.sujoy.mindmate.ui.theme.CalmLightColorScheme
+import com.sujoy.mindmate.ui.theme.DarkColorScheme
+import com.sujoy.mindmate.ui.theme.HappyDarkColorScheme
+import com.sujoy.mindmate.ui.theme.HappyLightColorScheme
+import com.sujoy.mindmate.ui.theme.LightColorScheme
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.ui.theme.SadDarkColorScheme
+import com.sujoy.mindmate.ui.theme.SadLightColorScheme
 
 
 class HomeActivity : ComponentActivity() {
@@ -76,15 +91,33 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MindMateTheme {
-                HomeScreen("Sujoy")
+            var currentColorScheme by remember {
+                mutableStateOf(
+                    LightColorScheme
+                )
+            }
+
+            val isDarkTheme = isSystemInDarkTheme()
+
+            LaunchedEffect(isDarkTheme) {
+                currentColorScheme = if (isDarkTheme) {
+                    DarkColorScheme
+                } else {
+                    LightColorScheme
+                }
+            }
+
+            MindMateTheme(darkTheme = isDarkTheme, colorScheme = currentColorScheme) {
+                HomeScreen("Sujoy", onThemeChange = { newScheme ->
+                    currentColorScheme = newScheme
+                })
             }
         }
     }
 }
 
 @Composable
-fun HomeScreen(name: String) {
+fun HomeScreen(name: String, onThemeChange: (ColorScheme) -> Unit) {
     var selectedNavItem by remember { mutableStateOf(0) }
     // Dummy data for previewing the timeline design
     // To be changed later
@@ -130,7 +163,7 @@ fun HomeScreen(name: String) {
             Spacer(modifier = Modifier.height(16.dp))
             GreetingSection(name = name)
             Spacer(modifier = Modifier.height(24.dp))
-            MoodSelector()
+            MoodSelector(onThemeChange = onThemeChange)
             Spacer(modifier = Modifier.height(32.dp))
 
 
@@ -206,15 +239,43 @@ fun GreetingSection(name: String) {
 }
 
 @Composable
-fun MoodSelector() {
+fun MoodSelector(onThemeChange: (ColorScheme) -> Unit) {
     val moods = listOf("😊 Happy", "😌 Calm", "🔥 Angry", "😢 Sad", "⚡️ Anxious")
+    val isDarkTheme = isSystemInDarkTheme()
+
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
         items(moods) { mood ->
             SuggestionChip(
-                onClick = { /* TODO: Handle mood selection */ },
+                onClick = {
+                    when {
+                        mood.contains("Happy") -> {
+                            onThemeChange(if (isDarkTheme) HappyDarkColorScheme else HappyLightColorScheme)
+                        }
+
+                        mood.contains("Calm") -> {
+                            onThemeChange(if (isDarkTheme) CalmDarkColorScheme else CalmLightColorScheme)
+                        }
+
+                        mood.contains("Angry") -> {
+                            onThemeChange(if (isDarkTheme) AngryDarkColorScheme else AngryLightColorScheme)
+                        }
+
+                        mood.contains("Sad") -> {
+                            onThemeChange(if (isDarkTheme) SadDarkColorScheme else SadLightColorScheme)
+                        }
+
+                        mood.contains("Anxious") -> {
+                            onThemeChange(if (isDarkTheme) AnxiousDarkColorScheme else AnxiousLightColorScheme)
+                        }
+
+                        else -> {
+                            onThemeChange(if (isDarkTheme) DarkColorScheme else LightColorScheme)
+                        }
+                    }
+                },
                 label = { Text(mood) },
                 shape = CircleShape,
                 // Change 2: Adapted chip colors
@@ -360,9 +421,9 @@ fun HomeBottomNavigation(selectedItem: Int, onItemSelected: (Int) -> Unit) {
 
     NavigationBar(
         modifier = Modifier
-            .padding(horizontal = 24.dp, vertical = 16.dp)
-            .shadow(elevation = 10.dp, shape = CircleShape)
-            .clip(CircleShape),
+            .padding(horizontal = 24.dp, vertical = 20.dp)
+            .shadow(elevation = 10.dp, shape = RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(24.dp)),
         containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
         tonalElevation = 0.dp // Elevation is handled by the shadow modifier
     ) {
@@ -371,12 +432,16 @@ fun HomeBottomNavigation(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 icon = {
                     Icon(
                         item.second,
-                        contentDescription = item.first
+                        contentDescription = item.first,
+                        modifier = if (index == selectedItem) Modifier.size(32.dp) else Modifier.size(
+                            24.dp
+                        )
                     )
                 },
                 label = { Text(item.first) },
                 selected = selectedItem == index,
                 onClick = { onItemSelected(index) },
+                alwaysShowLabel = false,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
@@ -497,6 +562,6 @@ fun TimelineItem(log: MoodLog, isLastItem: Boolean) {
 @Composable
 private fun HomeScreenPreview() {
     MindMateTheme {
-        HomeScreen("Sujoy")
+        HomeScreen("Sujoy", onThemeChange = {})
     }
 }
