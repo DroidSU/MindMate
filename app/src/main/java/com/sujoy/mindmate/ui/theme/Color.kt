@@ -255,6 +255,104 @@ val anxious_theme_dark_onSurface = Color(0xFFE8E0E8)
 val anxious_theme_dark_surfaceVariant = Color(0xFF4A4450)
 val anxious_theme_dark_onSurfaceVariant = Color(0xFFCCC3D2)
 
+// ------------------------------------------------------
+// TIRED THEME (Muted Purples & Grays)
+// ------------------------------------------------------
+
+// LIGHT Tired Theme
+val tired_theme_light_primary = Color(0xFF6750A4) // Muted Purple
+val tired_theme_light_onPrimary = Color(0xFFFFFFFF)
+val tired_theme_light_primaryContainer = Color(0xFFEADDFF)
+val tired_theme_light_onPrimaryContainer = Color(0xFF21005D)
+val tired_theme_light_secondary = Color(0xFF625B71) // Muted Indigo
+val tired_theme_light_onSecondary = Color(0xFFFFFFFF)
+val tired_theme_light_background = Color(0xFFF6EDFF) // Very Pale Lavender
+val tired_theme_light_onBackground = Color(0xFF1C1B1F)
+val tired_theme_light_surface = Color(0xFFFEF7FF)
+val tired_theme_light_onSurface = Color(0xFF1C1B1F)
+val tired_theme_light_surfaceVariant = Color(0xFFE7E0EC)
+val tired_theme_light_onSurfaceVariant = Color(0xFF49454F)
+
+// DARK Tired Theme
+val tired_theme_dark_primary = Color(0xFFD0BCFF) // Light, glowing purple
+val tired_theme_dark_onPrimary = Color(0xFF381E72)
+val tired_theme_dark_primaryContainer = Color(0xFF4F378B)
+val tired_theme_dark_onPrimaryContainer = Color(0xFFEADDFF)
+val tired_theme_dark_secondary = Color(0xFFCCC2DC) // Muted Lavender
+val tired_theme_dark_onSecondary = Color(0xFF332D41)
+val tired_theme_dark_background = Color(0xFF251F2A) // Deep, dark purple
+val tired_theme_dark_onBackground = Color(0xFFE6E1E5)
+val tired_theme_dark_surface = Color(0xFF1C1B1F)
+val tired_theme_dark_onSurface = Color(0xFFE6E1E5)
+val tired_theme_dark_surfaceVariant = Color(0xFF49454F)
+val tired_theme_dark_onSurfaceVariant = Color(0xFFCAC4D0)
+
+// ------------------------------------------------------
+// LONELY THEME (Somber Blues & Grays)
+// ------------------------------------------------------
+
+// LIGHT Lonely Theme
+val lonely_theme_light_primary = Color(0xFF5A5F71) // Blue-Gray
+val lonely_theme_light_onPrimary = Color(0xFFFFFFFF)
+val lonely_theme_light_primaryContainer = Color(0xFFDFE2F9)
+val lonely_theme_light_onPrimaryContainer = Color(0xFF171C2B)
+val lonely_theme_light_secondary = Color(0xFF5A5F71) // Matching Blue-Gray
+val lonely_theme_light_onSecondary = Color(0xFFFFFFFF)
+val lonely_theme_light_background = Color(0xFFF0F1F6) // Very Light Cool Gray
+val lonely_theme_light_onBackground = Color(0xFF1B1B1F)
+val lonely_theme_light_surface = Color(0xFFFCF8FD)
+val lonely_theme_light_onSurface = Color(0xFF1B1B1F)
+val lonely_theme_light_surfaceVariant = Color(0xFFE2E2E9)
+val lonely_theme_light_onSurfaceVariant = Color(0xFF45464D)
+
+// DARK Lonely Theme
+val lonely_theme_dark_primary = Color(0xFFC3C6DD) // Lighter Blue-Gray
+val lonely_theme_dark_onPrimary = Color(0xFF2C3042)
+val lonely_theme_dark_primaryContainer = Color(0xFF424659)
+val lonely_theme_dark_onPrimaryContainer = Color(0xFFDFE2F9)
+val lonely_theme_dark_secondary = Color(0xFFC3C6DD) // Lighter Blue-Gray
+val lonely_theme_dark_onSecondary = Color(0xFF2C3042)
+val lonely_theme_dark_background = Color(0xFF1E2129) // Deep Charcoal Blue
+val lonely_theme_dark_onBackground = Color(0xFFE3E2E6)
+val lonely_theme_dark_surface = Color(0xFF1B1B1F)
+val lonely_theme_dark_onSurface = Color(0xFFE3E2E6)
+val lonely_theme_dark_surfaceVariant = Color(0xFF45464D)
+val lonely_theme_dark_onSurfaceVariant = Color(0xFFC5C6CE)
+
+// ------------------------------------------------------
+// BORED THEME (Desaturated Grays & Beiges)
+// ------------------------------------------------------
+
+// LIGHT Bored Theme
+val bored_theme_light_primary = Color(0xFF79757F) // Neutral Gray
+val bored_theme_light_onPrimary = Color(0xFFFFFFFF)
+val bored_theme_light_primaryContainer = Color(0xFFE8E0EB)
+val bored_theme_light_onPrimaryContainer = Color(0xFF1D1B24)
+val bored_theme_light_secondary = Color(0xFF79757F) // Neutral Gray
+val bored_theme_light_onSecondary = Color(0xFFFFFFFF)
+val bored_theme_light_background = Color(0xFFF5F3F4) // Off-white/very light gray
+val bored_theme_light_onBackground = Color(0xFF1D1B1F)
+val bored_theme_light_surface = Color(0xFFFFF7F6)
+val bored_theme_light_onSurface = Color(0xFF1D1B1F)
+val bored_theme_light_surfaceVariant = Color(0xFFE7E0EC)
+val bored_theme_light_onSurfaceVariant = Color(0xFF49454F)
+
+// DARK Bored Theme
+val bored_theme_dark_primary = Color(0xFFE6E1E5) // Light Gray
+val bored_theme_dark_onPrimary = Color(0xFF49454F)
+val bored_theme_dark_primaryContainer = Color(0xFF615D67)
+val bored_theme_dark_onPrimaryContainer = Color(0xFFE8E0EB)
+val bored_theme_dark_secondary = Color(0xFFE6E1E5) // Light Gray
+val bored_theme_dark_onSecondary = Color(0xFF49454F)
+val bored_theme_dark_background = Color(0xFF212023) // Very Dark Gray
+val bored_theme_dark_onBackground = Color(0xFFE6E1E5)
+val bored_theme_dark_surface = Color(0xFF1D1B1F)
+val bored_theme_dark_onSurface = Color(0xFFE6E1E5)
+val bored_theme_dark_surfaceVariant = Color(0xFF49454F)
+val bored_theme_dark_onSurfaceVariant = Color(0xFFCAC4D0)
+
+
+
 
 
 

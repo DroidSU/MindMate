@@ -20,14 +20,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,27 +35,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.models.MoodDataModel
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
-import com.sujoy.mindmate.vm.OnboardingViewModel
+import com.sujoy.mindmate.utils.ConstantsManager
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: OnboardingViewModel) {
+fun ChooseMoods(
+    onContinue: () -> Unit,
+    onBack: () -> Unit,
+    selectedMoods: Set<String>,
+    toggleMood: (String) -> Unit
+) {
     val moods = listOf(
-        MoodDataModel("Happy", "😊", "Feeling joyful and positive"),
-        MoodDataModel("Anxious", "😬", "Feeling worried, nervous, or uneasy"),
-        MoodDataModel("Tired", "😴", "Feeling sleepy or drained of energy"),
-        MoodDataModel("Lonely", "😔", "Feeling sad from being alone"),
-        MoodDataModel("Stressed", "😣", "Feeling overwhelmed and under pressure"),
-        MoodDataModel("Bored", "😐", "Feeling unoccupied and uninterested"),
-        MoodDataModel("Angry", "😠", "Feeling annoyed or displeasure"),
-        MoodDataModel("Calm", "😌", "Feeling peaceful and untroubled")
+        MoodDataModel(ConstantsManager.HAPPY, "😊", "Feeling joyful and positive"),
+//        MoodDataModel(ConstantsManager.CALM, "😌", "Feeling peaceful and untroubled"),
+        MoodDataModel(ConstantsManager.ANXIOUS, "😬", "Feeling worried, nervous, or overwhelmed"),
+        MoodDataModel(ConstantsManager.SAD, "😔", "Feeling down or unhappy"),
+        MoodDataModel(ConstantsManager.ANGRY, "😠", "Feeling annoyed or displeased"),
+        MoodDataModel(ConstantsManager.MOTIVATED, "💪", "Feeling driven and determined"),
+        MoodDataModel(ConstantsManager.NEUTRAL, "😐", "Feeling neither good nor bad"),
+        MoodDataModel(ConstantsManager.TIRED, "😴", "Feeling sleepy or drained of energy"),
+        MoodDataModel(ConstantsManager.LONELY, "😔", "Feeling sad from being alone"),
+        MoodDataModel(ConstantsManager.BORED, "😑", "Feeling unoccupied and uninterested")
     )
-
-    val selectedMoods by viewModel.selectedMoods.collectAsState()
 
     Box(
         modifier = Modifier
@@ -111,13 +111,7 @@ fun ChooseMoods(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardin
                     MoodCard(
                         mood = mood,
                         isSelected = mood.name in selectedMoods,
-                        onClick = {
-                            if (mood.name in selectedMoods) {
-                                viewModel.removeMood(mood.name)
-                            } else {
-                                viewModel.addMood(mood.name)
-                            }
-                        }
+                        onClick = { toggleMood(mood.name) }
                     )
                 }
             }
@@ -174,7 +168,12 @@ private fun ChooseMoodsPreview() {
                     )
                 )
         ) {
-            ChooseMoods(onContinue = {}, onBack = {}, viewModel = viewModel())
+            ChooseMoods(
+                onContinue = {},
+                onBack = {},
+                selectedMoods = setOf("Happy", "Stressed"),
+                toggleMood = {}
+            )
         }
     }
 }

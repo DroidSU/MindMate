@@ -55,5 +55,5 @@ fun SuggestionChip(text: String, isSelected: Boolean, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 private fun SuggestionChipPreview() {
-    SuggestionChip(text = "Chip", isSelected = true) {}
+    SuggestionChip(text = "😊 Chip", isSelected = true) {}
 }

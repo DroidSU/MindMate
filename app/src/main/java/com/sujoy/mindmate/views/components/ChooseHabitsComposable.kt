@@ -23,14 +23,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,15 +44,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
-import com.sujoy.mindmate.vm.OnboardingViewModel
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit, viewModel: OnboardingViewModel) {
-    val selectedHabits by viewModel.selectedHabits.collectAsState()
+fun ChooseHabits(
+    onContinue: () -> Unit,
+    onBack: () -> Unit,
+    selectedHabits: Set<String>,
+    toggleHabit: (String) -> Unit,
+) {
     val habitSuggestions = remember {
         mutableStateListOf(
             "Workout",
@@ -84,11 +84,12 @@ fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardi
                 Button(
                     onClick = {
                         if (customHabit.isNotBlank()) {
-                            if (selectedHabits.size < 3) {
-                                viewModel.addHabit(customHabit)
-                            }
                             if (!habitSuggestions.contains(customHabit)) {
                                 habitSuggestions.add(customHabit)
+                            }
+                            // Only add if not already selected and within the limit
+                            if (customHabit !in selectedHabits && selectedHabits.size < 3) {
+                                toggleHabit(customHabit)
                             }
                             showCustomHabitDialog = false
                         }
@@ -161,12 +162,10 @@ fun ChooseHabits(onContinue: () -> Unit, onBack: () -> Unit, viewModel: Onboardi
                         text = habit,
                         isSelected = habit in selectedHabits,
                         onClick = {
-                            if (habit in selectedHabits) {
-                                viewModel.removeHabit(habit)
+                            if (habit !in selectedHabits && selectedHabits.size >= 3) {
+                                // Do nothing if trying to add more than 3
                             } else {
-                                if (selectedHabits.size < 3) {
-                                    viewModel.addHabit(habit)
-                                }
+                                toggleHabit(habit)
                             }
                         }
                     )
@@ -237,7 +236,12 @@ private fun ChooseHabitsPreview() {
                     )
                 )
         ) {
-            ChooseHabits(onContinue = {}, onBack = {}, viewModel = viewModel())
+            ChooseHabits(
+                onContinue = {},
+                onBack = {},
+                selectedHabits = setOf("Workout", "Write"),
+                toggleHabit = {}
+            )
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -47,27 +48,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.vm.OnboardingViewModel
+import com.sujoy.mindmate.vm.ViewModelFactory
 import kotlinx.coroutines.delay
 
 class OnboardingSummaryActivity : ComponentActivity() {
+
+    private val viewModel: OnboardingViewModel by viewModels {
+        ViewModelFactory(application)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MindMateTheme {
-                OnboardingSummary()
+                OnboardingSummary(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun OnboardingSummary(viewModel: OnboardingViewModel = viewModel()) {
+fun OnboardingSummary(viewModel: OnboardingViewModel) {
     LaunchedEffect(Unit) {
         viewModel.getSelectedHabits()
         viewModel.getSelectedMoods()
@@ -288,6 +294,11 @@ fun OnboardingSummaryContent(
 private fun OnboardingSummaryPreview() {
     val sampleHabits = setOf("Yoga", "Exercise")
     val sampleMoods = setOf("Happy", "Calm", "Focused")
+    // This preview does not build a real ViewModel, so we can't use the factory here.
+    // We will pass the ViewModel instance as a parameter to the composable.
+    // For the preview, we can't easily get an Application instance, so we can't create
+    // the ViewModel. Instead, we'll need to refactor OnboardingSummary to take the
+    // ViewModel as a parameter.
 
     MindMateTheme {
         Box(

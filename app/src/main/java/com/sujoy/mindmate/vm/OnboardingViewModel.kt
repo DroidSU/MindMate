@@ -48,20 +48,27 @@ class OnboardingViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun addHabit(habit: String) {
-        _selectedHabits.value += habit
+    fun toggleHabitSelection(habit: String) {
+        val currentHabits = _selectedHabits.value.toMutableSet()
+        if (currentHabits.contains(habit)) {
+            currentHabits.remove(habit)
+        } else {
+            // Enforce a limit of 3 habits
+            if (currentHabits.size < 3) {
+                currentHabits.add(habit)
+            }
+        }
+        _selectedHabits.value = currentHabits
     }
 
-    fun removeHabit(habit: String) {
-        _selectedHabits.value -= habit
-    }
-
-    fun addMood(mood: String) {
-        _selectedMoods.value += mood
-    }
-
-    fun removeMood(mood: String) {
-        _selectedMoods.value -= mood
+    fun toggleMoodSelection(mood: String) {
+        val currentMoods = _selectedMoods.value.toMutableSet()
+        if (currentMoods.contains(mood)) {
+            currentMoods.remove(mood)
+        } else {
+            currentMoods.add(mood)
+        }
+        _selectedMoods.value = currentMoods
     }
 
     fun setReminderOption(option: String) {

@@ -309,6 +309,131 @@ val AnxiousDarkColorScheme = darkColorScheme(
     onErrorContainer = md_theme_dark_onErrorContainer
 )
 
+// --- Tired Theme Color Schemes ---
+
+val TiredLightColorScheme = lightColorScheme(
+    primary = tired_theme_light_primary, onPrimary = tired_theme_light_onPrimary,
+    primaryContainer = tired_theme_light_primaryContainer,
+    onPrimaryContainer = tired_theme_light_onPrimaryContainer,
+    secondary = tired_theme_light_secondary,
+    onSecondary = tired_theme_light_onSecondary,
+    background = tired_theme_light_background,
+    onBackground = tired_theme_light_onBackground,
+    surface = tired_theme_light_surface,
+    onSurface = tired_theme_light_onSurface,
+    surfaceVariant = tired_theme_light_surfaceVariant,
+    onSurfaceVariant = tired_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+val TiredDarkColorScheme = darkColorScheme(
+    primary = tired_theme_dark_primary,
+    onPrimary = tired_theme_dark_onPrimary,
+    primaryContainer = tired_theme_dark_primaryContainer,
+    onPrimaryContainer = tired_theme_dark_onPrimaryContainer,
+    secondary = tired_theme_dark_secondary,
+    onSecondary = tired_theme_dark_onSecondary,
+    background = tired_theme_dark_background,
+    onBackground = tired_theme_dark_onBackground,
+    surface = tired_theme_dark_surface,
+    onSurface = tired_theme_dark_onSurface,
+    surfaceVariant = tired_theme_dark_surfaceVariant,
+    onSurfaceVariant = tired_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
+
+
+// --- Lonely Theme Color Schemes ---
+
+val LonelyLightColorScheme = lightColorScheme(
+    primary = lonely_theme_light_primary,
+    onPrimary = lonely_theme_light_onPrimary,
+    primaryContainer = lonely_theme_light_primaryContainer,
+    onPrimaryContainer = lonely_theme_light_onPrimaryContainer,
+    secondary = lonely_theme_light_secondary,
+    onSecondary = lonely_theme_light_onSecondary,
+    background = lonely_theme_light_background,
+    onBackground = lonely_theme_light_onBackground,
+    surface = lonely_theme_light_surface,
+    onSurface = lonely_theme_light_onSurface,
+    surfaceVariant = lonely_theme_light_surfaceVariant,
+    onSurfaceVariant = lonely_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+val LonelyDarkColorScheme = darkColorScheme(
+    primary = lonely_theme_dark_primary,
+    onPrimary = lonely_theme_dark_onPrimary,
+    primaryContainer = lonely_theme_dark_primaryContainer,
+    onPrimaryContainer = lonely_theme_dark_onPrimaryContainer,
+    secondary = lonely_theme_dark_secondary,
+    onSecondary = lonely_theme_dark_onSecondary,
+    background = lonely_theme_dark_background,
+    onBackground = lonely_theme_dark_onBackground,
+    surface = lonely_theme_dark_surface,
+    onSurface = lonely_theme_dark_onSurface,
+    surfaceVariant = lonely_theme_dark_surfaceVariant,
+    onSurfaceVariant = lonely_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
+
+// --- Bored Theme Color Schemes ---
+
+val BoredLightColorScheme = lightColorScheme(
+    primary = bored_theme_light_primary,
+    onPrimary = bored_theme_light_onPrimary,
+    primaryContainer = bored_theme_light_primaryContainer,
+    onPrimaryContainer = bored_theme_light_onPrimaryContainer,
+    secondary = bored_theme_light_secondary,
+    onSecondary = bored_theme_light_onSecondary,
+    background = bored_theme_light_background,
+    onBackground = bored_theme_light_onBackground,
+    surface = bored_theme_light_surface,
+    onSurface = bored_theme_light_onSurface,
+    surfaceVariant = bored_theme_light_surfaceVariant,
+    onSurfaceVariant = bored_theme_light_onSurfaceVariant,
+    outline = md_theme_light_outline,
+    error = md_theme_light_error,
+    onError = md_theme_light_onError,
+    errorContainer = md_theme_light_errorContainer,
+    onErrorContainer = md_theme_light_onErrorContainer
+)
+
+val BoredDarkColorScheme = darkColorScheme(
+    primary = bored_theme_dark_primary,
+    onPrimary = bored_theme_dark_onPrimary,
+    primaryContainer = bored_theme_dark_primaryContainer,
+    onPrimaryContainer = bored_theme_dark_onPrimaryContainer,
+    secondary = bored_theme_dark_secondary,
+    onSecondary = bored_theme_dark_onSecondary,
+    background = bored_theme_dark_background,
+    onBackground = bored_theme_dark_onBackground,
+    surface = bored_theme_dark_surface,
+    onSurface = bored_theme_dark_onSurface,
+    surfaceVariant = bored_theme_dark_surfaceVariant,
+    onSurfaceVariant = bored_theme_dark_onSurfaceVariant,
+    outline = md_theme_dark_outline,
+    error = md_theme_dark_error,
+    onError = md_theme_dark_onError,
+    errorContainer = md_theme_dark_errorContainer,
+    onErrorContainer = md_theme_dark_onErrorContainer
+)
 
 
 
