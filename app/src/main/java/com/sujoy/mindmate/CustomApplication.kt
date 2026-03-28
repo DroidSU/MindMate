@@ -1,14 +1,22 @@
 package com.sujoy.mindmate
 
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.google.firebase.FirebaseApp
-import com.sujoy.mindmate.db.MindMateDatabase
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
-class CustomApplication : Application() {
+@HiltAndroidApp
+class CustomApplication : Application(), Configuration.Provider {
 
-    // Lazy initialization of the database.
-    // The database will be created only when it's first accessed.
-    val database: MindMateDatabase by lazy { MindMateDatabase.getDatabase(this) }
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     override fun onCreate() {
         super.onCreate()

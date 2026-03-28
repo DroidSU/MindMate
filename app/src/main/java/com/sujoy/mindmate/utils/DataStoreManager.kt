@@ -55,11 +55,6 @@ class DataStoreManager(private val context: Context) {
         return preferences[ONBOARDING_COMPLETED_KEY] ?: false
     }
 
-
-    /**
-     * If you want to observe changes in real-time (recommended for UI),
-     * expose a Flow instead of using a suspend function.
-     */
     val selectedHabitsFlow: Flow<Set<String>> = context.datastore.data.map { preferences ->
         // Map the preferences to the specific Set<String> you need
         preferences[SELECTED_HABITS_KEY] ?: emptySet()

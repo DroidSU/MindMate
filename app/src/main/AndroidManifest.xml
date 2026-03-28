@@ -5,7 +5,7 @@
 
     <application
         android:name=".CustomApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -14,40 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MindMate">
         <activity
-            android:name=".views.screens.OnboardingSummaryActivity"
+            android:name=".ui.views.JournalEntryActivity"
             android:exported="false"
-            android:label="@string/title_activity_onboarding_summary"
+            android:label="@string/title_activity_journal_entry"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".views.screens.HomeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_home"
-            android:theme="@style/Theme.MindMate" />
-        <activity
-            android:name=".views.screens.OnboardingActivity"
-            android:exported="false"
-            android:label="@string/title_activity_onboarding_screen"
-            android:theme="@style/Theme.MindMate" />
-        <activity
-            android:name=".views.screens.NewJournalActivity"
-            android:exported="false"
-            android:label="@string/title_activity_journal"
-            android:theme="@style/Theme.MindMate"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".views.screens.MainActivity"
-            android:exported="false"
-            android:label="@string/title_activity_journal"
-            android:theme="@style/Theme.MindMate" />
-        <activity
-            android:name=".views.screens.AuthenticationActivity"
-            android:exported="false"
-            android:label="@string/title_activity_sign_in_screen"
-            android:theme="@style/Theme.MindMate" />
-        <activity
-            android:name=".views.screens.SplashScreenActivity"
+            android:name=".ui.views.MainActivity2"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.MindMate">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,6 +28,47 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.views.TimelineActivity"
+            android:exported="false"
+            android:label="@string/title_activity_timeline"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".ui.views.screens.OnboardingSummaryActivity"
+            android:exported="false"
+            android:label="@string/title_activity_onboarding_summary"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".ui.views.screens.HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".ui.views.screens.OnboardingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_onboarding_screen"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".ui.views.screens.NewJournalActivity"
+            android:exported="false"
+            android:label="@string/title_activity_journal"
+            android:theme="@style/Theme.MindMate"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.views.screens.MainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_journal"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".ui.views.screens.AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sign_in_screen"
+            android:theme="@style/Theme.MindMate" />
+        <activity
+            android:name=".ui.views.screens.SplashScreenActivity"
+            android:exported="false"
+            android:label="@string/title_activity_splash_screen"
+            android:theme="@style/Theme.MindMate" />
     </application>
 
 </manifest>

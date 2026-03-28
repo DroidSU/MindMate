@@ -2,6 +2,7 @@ package com.sujoy.mindmate.utils
 
 class ConstantsManager {
     companion object {
+        const val APP_TAG = "MindMate_Tag"
         const val Error_Tag = "MindMate_Error"
         const val Success_Tag = "MindMate_Success"
         const val GEN_MODEL_VERSION = "gemini-2.5-flash"
@@ -16,10 +17,15 @@ class ConstantsManager {
         const val BORED = "Bored"
         const val NEUTRAL = "Neutral"
 
-        const val JOURNAL_DB_NAME = "journal_table"
+        const val JOURNAL_DB_NAME_OLD = "journal_table"
         const val JOURNAL_ID = "id"
         const val JOURNAL_DB_VERSION = 1
-        const val JOURNAL_DATE = "date"
+        const val JOURNAL_DATE_OLD = "date"
+
+        const val TABLE_JOURNAL_ITEMS = "journal_items"
+        const val TABLE_JOURNAL_TIMESTAMP = "timestamp"
+
+        const val TABLE_JOURNAL_ANALYZED = "journal_analyzed"
 
         const val REMINDER_OPT_1 = "Only when mood is risky"
         const val REMINDER_OPT_2 = "Daily check-in + mood checks"
