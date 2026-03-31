@@ -67,7 +67,7 @@ fun TimelineScreen(
     journalItemsList: List<JournalItemDBModel>,
     onAddEntryClick: () -> Unit = {}
 ) {
-    // Determine background aura color based on the latest entry's mood
+    // Reactively determine background aura color based on the latest entry's mood
     val latestMoodColor = if (journalItemsList.isNotEmpty()) {
         getMoodColor(journalItemsList.first().mood)
     } else {
@@ -83,21 +83,22 @@ fun TimelineScreen(
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)) {
+        // --- AMBIENT AURA (Consistent with JournalEntryScreen) ---
         Canvas(modifier = Modifier
             .fillMaxSize()
             .blur(100.dp)) {
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(animatedAuraColor.copy(alpha = 0.12f), Color.Transparent),
+                    colors = listOf(animatedAuraColor.copy(alpha = 0.15f), Color.Transparent),
                     center = Offset(size.width * 0.8f, size.height * 0.2f),
-                    radius = size.width * 1.2f
+                    radius = size.width * 1.5f
                 )
             )
         }
 
         Scaffold(
             topBar = {
-                TimelineHeader(onAddEntryClick)
+                TimelineHeaderStateless(onAddEntryClick)
             },
             containerColor = Color.Transparent
         ) { innerPadding ->
@@ -110,7 +111,6 @@ fun TimelineScreen(
                     is AppUiState.Loading -> {
                         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
-
                     is AppUiState.Error -> {
                         Text(
                             text = uiState.message,
@@ -118,12 +118,11 @@ fun TimelineScreen(
                             color = MaterialTheme.colorScheme.error
                         )
                     }
-
                     else -> {
                         if (journalItemsList.isEmpty()) {
-                            EmptyTimelineState(onAddEntryClick)
+                            EmptyTimelineStateStateless(onAddEntryClick)
                         } else {
-                            TimelineList(journalItemsList, onAddEntryClick)
+                            TimelineListStateless(journalItemsList, onAddEntryClick)
                         }
                     }
                 }
@@ -133,7 +132,7 @@ fun TimelineScreen(
 }
 
 @Composable
-private fun TimelineHeader(onAddEntryClick: () -> Unit) {
+private fun TimelineHeaderStateless(onAddEntryClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,17 +179,16 @@ private fun TimelineHeader(onAddEntryClick: () -> Unit) {
 }
 
 @Composable
-private fun TimelineList(
+private fun TimelineListStateless(
     items: List<JournalItemDBModel>,
     onAddEntryClick: () -> Unit
 ) {
-    val timelineColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+    val timelineColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .drawBehind {
-                // Draws a softer, glowing timeline path
                 drawLine(
                     color = timelineColor,
                     start = Offset(40.dp.toPx(), 0f),
@@ -201,15 +199,15 @@ private fun TimelineList(
             .padding(horizontal = 16.dp)
     ) {
         item {
-            DailyHook(onAddEntryClick)
+            DailyHookStateless(onAddEntryClick)
             Spacer(modifier = Modifier.height(24.dp))
         }
 
         itemsIndexed(
             items = items,
             key = { _, item -> item.id }
-        ) { index, item ->
-            TimelineMoment(item)
+        ) { _, item ->
+            TimelineMomentStateless(item)
         }
 
         item { Spacer(modifier = Modifier.height(40.dp)) }
@@ -217,17 +215,19 @@ private fun TimelineList(
 }
 
 @Composable
-private fun DailyHook(onClick: () -> Unit) {
+private fun DailyHookStateless(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 56.dp, end = 8.dp)
             .clip(RoundedCornerShape(24.dp))
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.05f))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
             .border(
-                1.dp,
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                RoundedCornerShape(24.dp)
+                width = 1.dp,
+                brush = Brush.horizontalGradient(
+                    listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), Color.Transparent)
+                ),
+                shape = RoundedCornerShape(24.dp)
             )
             .clickable { onClick() }
             .padding(20.dp)
@@ -257,7 +257,7 @@ private fun DailyHook(onClick: () -> Unit) {
 }
 
 @Composable
-private fun TimelineMoment(item: JournalItemDBModel) {
+private fun TimelineMomentStateless(item: JournalItemDBModel) {
     val moodColor = getMoodColor(item.mood)
 
     Row(
@@ -265,7 +265,7 @@ private fun TimelineMoment(item: JournalItemDBModel) {
             .fillMaxWidth()
             .padding(vertical = 16.dp)
     ) {
-        // Milestone Glowing Orb
+        // Milestone Orb
         Box(
             modifier = Modifier
                 .width(48.dp)
@@ -276,8 +276,8 @@ private fun TimelineMoment(item: JournalItemDBModel) {
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(moodColor.copy(alpha = 0.2f))
-                    .border(2.dp, moodColor.copy(alpha = 0.4f), CircleShape),
+                    .background(moodColor.copy(alpha = 0.15f))
+                    .border(1.5.dp, moodColor.copy(alpha = 0.4f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(getMoodEmoji(item.mood), fontSize = 16.sp)
@@ -298,11 +298,11 @@ private fun TimelineMoment(item: JournalItemDBModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(28.dp))
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
                     .border(
                         width = 1.dp,
                         brush = Brush.horizontalGradient(
-                            colors = listOf(moodColor.copy(alpha = 0.3f), Color.Transparent)
+                            colors = listOf(moodColor.copy(alpha = 0.35f), Color.Transparent)
                         ),
                         shape = RoundedCornerShape(28.dp)
                     )
@@ -322,14 +322,17 @@ private fun TimelineMoment(item: JournalItemDBModel) {
                         Spacer(modifier = Modifier.width(12.dp))
                         Box(
                             modifier = Modifier
-                                .size(4.dp)
-                                .background(MaterialTheme.colorScheme.outlineVariant, CircleShape)
+                                .size(3.dp)
+                                .background(
+                                    MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                                    CircleShape
+                                )
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = UtilityMethods.formatDate(item.timeStamp),
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
                     }
 
@@ -346,18 +349,18 @@ private fun TimelineMoment(item: JournalItemDBModel) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mood Label Tag
+                    // Subtle Mood Tag
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
                             .background(moodColor.copy(alpha = 0.1f))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = item.mood.name.lowercase().replaceFirstChar { it.uppercase() },
                             style = MaterialTheme.typography.labelSmall,
                             color = moodColor,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.ExtraBold
                         )
                     }
                 }
@@ -367,7 +370,7 @@ private fun TimelineMoment(item: JournalItemDBModel) {
 }
 
 @Composable
-private fun EmptyTimelineState(onAddEntryClick: () -> Unit) {
+private fun EmptyTimelineStateStateless(onAddEntryClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -380,8 +383,8 @@ private fun EmptyTimelineState(onAddEntryClick: () -> Unit) {
             contentDescription = null,
             modifier = Modifier
                 .size(80.dp)
-                .blur(2.dp),
-            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                .blur(1.dp),
+            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
@@ -391,7 +394,7 @@ private fun EmptyTimelineState(onAddEntryClick: () -> Unit) {
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Every great story starts with a single reflection. Start yours now.",
+            text = "Begin your path of reflection today. Every moment is worth remembering.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),

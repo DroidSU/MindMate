@@ -26,23 +26,24 @@ class MainActivity2 : ComponentActivity() {
             MindMateTheme {
                 val context = LocalContext.current
 
+                val username by viewModel.username.collectAsState()
                 val isOnboardingCompleted by viewModel.isOnboardingCompleted.collectAsState()
 
-                LaunchedEffect(isOnboardingCompleted) {
-                    when (isOnboardingCompleted) {
-                        true -> {
-                            context.startActivity(Intent(context, TimelineActivity::class.java))
-                            (context as ComponentActivity).finish()
-                        }
+                LaunchedEffect(isOnboardingCompleted, username) {
+                    // Wait until isOnboardingCompleted state is determined (not null)
+                    // and a username exists (handled by ViewModel auto-generating it)
+                    if (isOnboardingCompleted == null || username.isEmpty()) return@LaunchedEffect
 
-                        false -> {
-                            context.startActivity(Intent(context, TimelineActivity::class.java))
-                            (context as ComponentActivity).finish()
-                        }
+                    val targetActivity = if (isOnboardingCompleted == true) {
+                        TimelineActivity::class.java
+                    } else {
+                        // Move forward to Onboarding even if false
+                        TimelineActivity::class.java
+                    }
 
-                        null -> {
-                            // Still loading status
-                        }
+                    targetActivity.let {
+                        context.startActivity(Intent(context, it))
+                        (context as? ComponentActivity)?.finish()
                     }
                 }
             }

@@ -11,4 +11,5 @@ data class JournalItemDBModel(
     val mood: MoodsEnum,
     val timeStamp: Long,
     val analyzedId: String = "",
+    val sentimentScore: Float = 0f
 )

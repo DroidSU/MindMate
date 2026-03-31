@@ -12,8 +12,9 @@ import com.sujoy.mindmate.data.models.MoodsEnum
 import com.sujoy.mindmate.utils.ConstantsManager
 import kotlinx.coroutines.tasks.await
 import org.json.JSONObject
+import javax.inject.Inject
 
-class MindMateApiRepoImpl() : MindMateApiRepository {
+class MindMateApiRepoImpl @Inject constructor() : MindMateApiRepository {
     private val auth: FirebaseAuth = Firebase.auth
 
     private val model = FirebaseAI.getInstance(FirebaseApp.getInstance()).generativeModel(

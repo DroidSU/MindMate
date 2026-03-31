@@ -1,6 +1,7 @@
 package com.sujoy.mindmate.di
 
 import android.content.Context
+import com.google.mediapipe.tasks.text.textclassifier.TextClassifier
 import com.sujoy.mindmate.data.database.AppDAO
 import com.sujoy.mindmate.data.database.JournalDAO
 import com.sujoy.mindmate.data.database.MindMateDatabase
@@ -8,6 +9,8 @@ import com.sujoy.mindmate.data.repositories.DatabaseRepository
 import com.sujoy.mindmate.data.repositories.DatabaseRepositoryImpl
 import com.sujoy.mindmate.data.repositories.MindMateApiRepoImpl
 import com.sujoy.mindmate.data.repositories.MindMateApiRepository
+import com.sujoy.mindmate.data.repositories.MlModelRepository
+import com.sujoy.mindmate.data.repositories.MlModelRepositoryImpl
 import com.sujoy.mindmate.utils.DataStoreManager
 import dagger.Module
 import dagger.Provides
@@ -48,6 +51,14 @@ object AppModule {
     @Singleton
     fun provideMindMateApiRepository(): MindMateApiRepository {
         return MindMateApiRepoImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMlModelRepository(
+        classifier: TextClassifier
+    ): MlModelRepository {
+        return MlModelRepositoryImpl(classifier)
     }
 
     @Provides

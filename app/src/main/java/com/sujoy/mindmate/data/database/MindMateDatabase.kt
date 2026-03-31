@@ -5,11 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import com.sujoy.mindmate.data.models.JournalItemModel
 
 @Database(
-    entities = [JournalItemModel::class, JournalItemDBModel::class],
+    entities = [JournalItemModel::class, JournalItemDBModel::class, JournalAnalyzedDbModel::class],
     version = 2,
     exportSchema = false
 )

@@ -9,6 +9,7 @@ import com.sujoy.mindmate.utils.ConstantsManager
 data class JournalAnalyzedDbModel(
     @PrimaryKey val id: String,
     val journalId: String,
+    val sentimentScore: Float,
     val mood: String,
     val message: String,
     val timeStamp: Long,

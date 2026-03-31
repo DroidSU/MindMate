@@ -2,6 +2,7 @@ package com.sujoy.mindmate.data.repositories
 
 import com.sujoy.mindmate.data.database.AppDAO
 import com.sujoy.mindmate.data.database.JournalDAO
+import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import com.sujoy.mindmate.data.models.JournalItemModel
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,18 @@ class DatabaseRepositoryImpl(private val journalDAO: JournalDAO, private val app
 
     override suspend fun saveJournalItem(item: JournalItemDBModel) {
         appDAO.insertJournal(item)
+    }
+
+    override suspend fun updateSentimentScore(id: String, score: Float) {
+        appDAO.updateSentimentAndAnalysisId(id, score, "")
+    }
+
+    override suspend fun saveAnalysisItem(item: JournalAnalyzedDbModel) {
+        appDAO.insertAnalysisItem(item)
+    }
+
+    override suspend fun saveAnalysisAndUpdateScore(item: JournalAnalyzedDbModel) {
+        appDAO.saveAnalysisAndUpdateScore(item)
     }
 
     override suspend fun saveJournal(journal: JournalItemModel) {

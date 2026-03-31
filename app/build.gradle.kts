@@ -9,9 +9,7 @@ plugins {
 
 android {
     namespace = "com.sujoy.mindmate"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.sujoy.mindmate"
@@ -41,7 +39,26 @@ android {
     }
     buildFeatures {
         compose = true
+        mlModelBinding = true
     }
+    androidResources {
+        noCompress += "tflite"
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+        // Fix for 16 KB page size alignment
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+}
+
+configurations.all {
+    exclude(group = "org.tensorflow", module = "tensorflow-lite-api")
+    exclude(group = "org.tensorflow", module = "tensorflow-lite-support-api")
 }
 
 dependencies {
@@ -70,8 +87,8 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 
-    // ML Kit
-    implementation(libs.mlkit.text.recognition)
+    // MediaPipe
+    implementation(libs.mediapipe.tasks.text)
 
     // WorkManager
     implementation(libs.androidx.work.runtime.ktx)
@@ -86,6 +103,6 @@ dependencies {
 
     // Room Database
     implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx) // Kotlin Coroutines support
-    ksp(libs.androidx.room.compiler) // Annotation Processor (KSP)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 }

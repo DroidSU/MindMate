@@ -21,6 +21,8 @@ class DataStoreManager(private val context: Context) {
         val SELECTED_MOODS_KEY = stringSetPreferencesKey("selected_moods")
         val REMINDER_TYPE_KEY = stringPreferencesKey("reminder_type")
         val REMINDER_TIME_KEY = longPreferencesKey("reminder_time")
+
+        val USERNAME = stringPreferencesKey("username")
         val ONBOARDING_COMPLETED_KEY = booleanPreferencesKey("onboarding_completed")
     }
 
@@ -38,6 +40,17 @@ class DataStoreManager(private val context: Context) {
             preferences[REMINDER_TIME_KEY] = reminderTime
             preferences[ONBOARDING_COMPLETED_KEY] = onboardingCompleted
         }
+    }
+
+    suspend fun saveUsername(username: String) {
+        context.datastore.edit { preferences ->
+            preferences[USERNAME] = username
+        }
+    }
+
+    suspend fun getUsername(): String {
+        val preferences = context.datastore.data.first()
+        return preferences[USERNAME] ?: ""
     }
 
     suspend fun getSelectedHabits(): Set<String> {

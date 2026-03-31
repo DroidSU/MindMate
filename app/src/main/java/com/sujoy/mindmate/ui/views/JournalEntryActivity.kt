@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.ui.views.screens.JournalEntryScreen
 import com.sujoy.mindmate.ui.vm.JournalEntryViewModel
@@ -22,15 +23,17 @@ class JournalEntryActivity : ComponentActivity() {
         setContent {
             MindMateTheme {
 
-                val uiState = viewModel.uiState.collectAsState()
-                val entryText = viewModel.entryText.collectAsState()
-                val selectedMood = viewModel.selectedMood.collectAsState()
+                val uiState by viewModel.uiState.collectAsState()
+                val entryText by viewModel.entryText.collectAsState()
+                val selectedMood by viewModel.selectedMood.collectAsState()
+                val analyzedMoodObject by viewModel.analyzedMood.collectAsState()
 
 
                 JournalEntryScreen(
-                    uiState = uiState.value,
-                    textContent = entryText.value,
-                    selectedMood = selectedMood.value,
+                    uiState = uiState,
+                    textContent = entryText,
+                    selectedMood = selectedMood,
+                    analyzedMoodObject = analyzedMoodObject,
                     onTextChange = {
                         viewModel.onEntryTextChanged(it)
                     },
@@ -39,6 +42,8 @@ class JournalEntryActivity : ComponentActivity() {
                     },
                     onSaveClick = {
                         viewModel.saveEntry()
+                    },
+                    onCloseDialog = {
                         finish()
                     }
                 )

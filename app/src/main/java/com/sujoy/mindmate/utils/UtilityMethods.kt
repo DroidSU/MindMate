@@ -1,5 +1,6 @@
 package com.sujoy.mindmate.utils
 
+import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -20,9 +21,11 @@ import com.sujoy.mindmate.ui.theme.MoodSadDark
 import com.sujoy.mindmate.ui.theme.MoodSadLight
 import com.sujoy.mindmate.ui.theme.MoodStressedDark
 import com.sujoy.mindmate.ui.theme.MoodStressedLight
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 class UtilityMethods {
     companion object {
@@ -40,6 +43,35 @@ class UtilityMethods {
         fun formatMillisToTime(milliseconds: Long): String {
             val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
             return formatter.format(Date(milliseconds))
+        }
+
+        fun generateUniqueJournalId(): String {
+            val timestamp = System.currentTimeMillis()
+            val randomId = UUID.randomUUID().toString().take(8)
+            val combined = "${timestamp}user${randomId}j"
+            return hashString(combined)
+        }
+
+        fun generateUniqueAnalysisId(): String {
+            val timestamp = System.currentTimeMillis()
+            val randomId = UUID.randomUUID().toString().take(8)
+            val combined = "${timestamp}user${randomId}s"
+            return hashString(combined)
+        }
+
+        /**
+         * Generates a unique username by appending a short time-based suffix in Base36.
+         * Example: User_k7v2p9
+         */
+        fun generateUniqueUsername(base: String = "User"): String {
+            val suffix = System.nanoTime().toString(36).takeLast(6)
+            return "${base}_$suffix"
+        }
+
+        private fun hashString(input: String): String {
+            return MessageDigest.getInstance("SHA-256")
+                .digest(input.toByteArray())
+                .joinToString("") { "%02x".format(it) }
         }
 
         @Composable
@@ -67,6 +99,13 @@ class UtilityMethods {
                 MoodsEnum.RELAXED -> "😌"
                 MoodsEnum.MOTIVATED -> "💪"
                 MoodsEnum.NEUTRAL -> "😐"
+            }
+        }
+
+
+        fun loadVocab(context: Context): Map<String, Int> {
+            return context.assets.open("vocab.txt").bufferedReader().useLines { lines ->
+                lines.mapIndexed { index, s -> s to index }.toMap()
             }
         }
     }

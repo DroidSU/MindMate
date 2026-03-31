@@ -24,8 +24,8 @@ class ConstantsManager {
 
         const val TABLE_JOURNAL_ITEMS = "journal_items"
         const val TABLE_JOURNAL_TIMESTAMP = "timestamp"
-
         const val TABLE_JOURNAL_ANALYZED = "journal_analyzed"
+        const val SENTIMENT_SCORE = "sentimentScore"
 
         const val REMINDER_OPT_1 = "Only when mood is risky"
         const val REMINDER_OPT_2 = "Daily check-in + mood checks"
