@@ -15,7 +15,7 @@ import com.sujoy.mindmate.ui.vm.TimelineViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeActivity2 : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
 
     private val timelineViewModel: TimelineViewModel by viewModels()
     private val moodStatsViewModel: MoodStatsViewModel by viewModels()
@@ -35,7 +35,7 @@ class HomeActivity2 : ComponentActivity() {
                     selectedPeriod = selectedPeriod,
                     onPeriodSelected = { moodStatsViewModel.setPeriod(it) },
                     onAddEntryClick = {
-                        startActivity(Intent(this@HomeActivity2, JournalEntryActivity::class.java))
+                        startActivity(Intent(this@HomeActivity, JournalEntryActivity::class.java))
                     }
                 )
             }

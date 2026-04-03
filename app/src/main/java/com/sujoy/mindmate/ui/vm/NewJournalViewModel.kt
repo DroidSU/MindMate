@@ -3,8 +3,7 @@ package com.sujoy.mindmate.ui.vm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sujoy.mindmate.data.models.AnalyzedMoodObject
-import com.sujoy.mindmate.data.models.JournalItemModel
+import com.sujoy.mindmate.data.models.MoodAnalysisResponse
 import com.sujoy.mindmate.data.repositories.DatabaseRepository
 import com.sujoy.mindmate.data.repositories.MindMateApiRepository
 import com.sujoy.mindmate.utils.ConstantsManager
@@ -33,8 +32,8 @@ class NewJournalViewModel @Inject constructor(
     private val _isAnalyzing = MutableStateFlow(false)
     val isAnalyzing: StateFlow<Boolean> = _isAnalyzing.asStateFlow()
 
-    private val _analysisResult = MutableStateFlow<Result<AnalyzedMoodObject>?>(null)
-    val analysisResult: StateFlow<Result<AnalyzedMoodObject>?> = _analysisResult.asStateFlow()
+    private val _analysisResult = MutableStateFlow<Result<MoodAnalysisResponse>?>(null)
+    val analysisResult: StateFlow<Result<MoodAnalysisResponse>?> = _analysisResult.asStateFlow()
 
     private val _finishActivity = MutableStateFlow(false)
     val finishActivity = _finishActivity.asStateFlow()

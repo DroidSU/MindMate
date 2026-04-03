@@ -30,4 +30,16 @@ interface AppDAO {
         insertAnalysisItem(item)
         updateSentimentAndAnalysisId(item.journalId, item.sentimentScore, item.id)
     }
+
+    @Query("DELETE FROM " + ConstantsManager.TABLE_JOURNAL_ITEMS + " WHERE " + ConstantsManager.JOURNAL_ID + " = :id")
+    suspend fun deleteJournal(id: String)
+
+    @Query("DELETE FROM " + ConstantsManager.TABLE_JOURNAL_ANALYZED + " WHERE " + ConstantsManager.JOURNAL_ID + " = :id")
+    suspend fun deleteAnalysis(id: String)
+
+    @Transaction
+    suspend fun deleteJournalReference(id: String) {
+        deleteJournal(id)
+        deleteAnalysis(id)
+    }
 }

@@ -3,7 +3,6 @@ package com.sujoy.mindmate.di
 import android.content.Context
 import com.google.mediapipe.tasks.text.textclassifier.TextClassifier
 import com.sujoy.mindmate.data.database.AppDAO
-import com.sujoy.mindmate.data.database.JournalDAO
 import com.sujoy.mindmate.data.database.MindMateDatabase
 import com.sujoy.mindmate.data.repositories.DatabaseRepository
 import com.sujoy.mindmate.data.repositories.DatabaseRepositoryImpl
@@ -31,20 +30,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideJournalDao(database: MindMateDatabase): JournalDAO {
-        return database.journalDao()
-    }
-
-    @Provides
-    @Singleton
     fun provideAppDao(database: MindMateDatabase): AppDAO {
         return database.appDao()
     }
 
     @Provides
     @Singleton
-    fun provideDatabaseRepository(journalDAO: JournalDAO, appDao: AppDAO): DatabaseRepository {
-        return DatabaseRepositoryImpl(journalDAO, appDao)
+    fun provideDatabaseRepository(appDao: AppDAO): DatabaseRepository {
+        return DatabaseRepositoryImpl(appDao)
     }
 
     @Provides

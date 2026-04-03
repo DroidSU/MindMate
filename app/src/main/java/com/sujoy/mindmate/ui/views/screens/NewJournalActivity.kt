@@ -67,7 +67,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sujoy.mindmate.data.models.AnalyzedMoodObject
+import com.sujoy.mindmate.data.models.MoodAnalysisResponse
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.ui.vm.NewJournalViewModel
 import com.sujoy.mindmate.utils.UtilityMethods
@@ -349,7 +349,7 @@ private fun JournalScreen(viewModel: NewJournalViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun ShowMoodSheet(moodObject: AnalyzedMoodObject, onDismiss: () -> Unit) {
+private fun ShowMoodSheet(moodObject: MoodAnalysisResponse, onDismiss: () -> Unit) {
     val emoji = when (moodObject.mood.uppercase()) {
         "HAPPY" -> "😄"
         "SAD" -> "😢"

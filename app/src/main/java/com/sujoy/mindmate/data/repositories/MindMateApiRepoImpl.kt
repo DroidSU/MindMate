@@ -7,7 +7,7 @@ import com.google.firebase.ai.FirebaseAI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.sujoy.mindmate.data.models.AnalyzedMoodObject
+import com.sujoy.mindmate.data.models.MoodAnalysisResponse
 import com.sujoy.mindmate.data.models.MoodsEnum
 import com.sujoy.mindmate.utils.ConstantsManager
 import kotlinx.coroutines.tasks.await
@@ -42,7 +42,8 @@ class MindMateApiRepoImpl @Inject constructor() : MindMateApiRepository {
         }
     }
 
-    override suspend fun analyzeMood(entryText: String): Result<AnalyzedMoodObject> {
+    // Mood analysis using prompt AI.
+    override suspend fun analyzeMood(entryText: String): Result<MoodAnalysisResponse> {
         // 1. Get all enum names as a list of strings and join them separated by a comma
         val moodOptions = MoodsEnum.entries.joinToString(", ") { it.name }
 
@@ -74,7 +75,7 @@ class MindMateApiRepoImpl @Inject constructor() : MindMateApiRepository {
                 val mood = jsonObject.getString("mood")
                 val message = jsonObject.getString("message")
 
-                Result.success(AnalyzedMoodObject(mood, message))
+                Result.success(MoodAnalysisResponse(mood, message))
             }
         } catch (e: Exception) {
             // This will catch potential network errors or JSON parsing errors.

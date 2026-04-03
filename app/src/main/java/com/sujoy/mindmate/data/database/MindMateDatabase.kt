@@ -7,18 +7,15 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.JournalItemDBModel
-import com.sujoy.mindmate.data.models.JournalItemModel
 
 @Database(
-    entities = [JournalItemModel::class, JournalItemDBModel::class, JournalAnalyzedDbModel::class],
+    entities = [JournalItemDBModel::class, JournalAnalyzedDbModel::class],
     version = 2,
     exportSchema = false
 )
 
 @TypeConverters(Converters::class)
 abstract class MindMateDatabase : RoomDatabase() {
-
-    abstract fun journalDao(): JournalDAO
     abstract fun appDao(): AppDAO
 
     companion object {

@@ -44,7 +44,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sujoy.mindmate.R
-import com.sujoy.mindmate.data.models.JournalItemModel
 import com.sujoy.mindmate.utils.ConstantsManager
 import com.sujoy.mindmate.utils.UtilityMethods
 import kotlinx.coroutines.delay

@@ -15,7 +15,7 @@ import com.sujoy.mindmate.ui.vm.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity2 : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -35,10 +35,10 @@ class MainActivity2 : ComponentActivity() {
                     if (isOnboardingCompleted == null || username.isEmpty()) return@LaunchedEffect
 
                     val targetActivity = if (isOnboardingCompleted == true) {
-                        HomeActivity2::class.java
+                        HomeActivity::class.java
                     } else {
                         // Move forward to Onboarding even if false
-                        HomeActivity2::class.java
+                        HomeActivity::class.java
                     }
 
                     targetActivity.let {
