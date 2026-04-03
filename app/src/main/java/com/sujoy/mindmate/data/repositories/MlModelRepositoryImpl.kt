@@ -37,6 +37,7 @@ class MlModelRepositoryImpl @Inject constructor(
 
                 val analysisId = UtilityMethods.generateUniqueAnalysisId()
 
+                // currently we only classify positive as Happy and negative as Sad due to limited number of labels from model.
                 val mood = when {
                     topLabel.contains("positive") -> MoodsEnum.HAPPY.name
                     topLabel.contains("negative") -> MoodsEnum.SAD.name

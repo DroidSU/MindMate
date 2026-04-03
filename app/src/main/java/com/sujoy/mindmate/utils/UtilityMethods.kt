@@ -23,6 +23,7 @@ import com.sujoy.mindmate.ui.theme.MoodStressedDark
 import com.sujoy.mindmate.ui.theme.MoodStressedLight
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
@@ -107,6 +108,12 @@ class UtilityMethods {
             return context.assets.open("vocab.txt").bufferedReader().useLines { lines ->
                 lines.mapIndexed { index, s -> s to index }.toMap()
             }
+        }
+
+        fun getDayName(dayOfYear: Int): String {
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.DAY_OF_YEAR, dayOfYear)
+            return SimpleDateFormat("EEE", Locale.getDefault()).format(calendar.time)
         }
     }
 }

@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -29,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.rounded.AutoAwesome
-import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -57,6 +55,7 @@ import com.sujoy.mindmate.data.models.AppUiState
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import com.sujoy.mindmate.data.models.MoodsEnum
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.ui.views.components.HomeScreenHeader
 import com.sujoy.mindmate.utils.UtilityMethods
 import com.sujoy.mindmate.utils.UtilityMethods.Companion.getMoodColor
 import com.sujoy.mindmate.utils.UtilityMethods.Companion.getMoodEmoji
@@ -67,7 +66,6 @@ fun TimelineScreen(
     journalItemsList: List<JournalItemDBModel>,
     onAddEntryClick: () -> Unit = {}
 ) {
-    // Reactively determine background aura color based on the latest entry's mood
     val latestMoodColor = if (journalItemsList.isNotEmpty()) {
         getMoodColor(journalItemsList.first().mood)
     } else {
@@ -83,7 +81,6 @@ fun TimelineScreen(
     Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)) {
-        // --- AMBIENT AURA (Consistent with JournalEntryScreen) ---
         Canvas(modifier = Modifier
             .fillMaxSize()
             .blur(100.dp)) {
@@ -97,16 +94,12 @@ fun TimelineScreen(
         }
 
         Scaffold(
-            topBar = {
-                TimelineHeaderStateless(onAddEntryClick)
-            },
+            topBar = { HomeScreenHeader(onAddEntryClick) },
             containerColor = Color.Transparent
         ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)) {
                 when (uiState) {
                     is AppUiState.Loading -> {
                         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -119,11 +112,7 @@ fun TimelineScreen(
                         )
                     }
                     else -> {
-                        if (journalItemsList.isEmpty()) {
-                            EmptyTimelineStateStateless(onAddEntryClick)
-                        } else {
-                            TimelineListStateless(journalItemsList, onAddEntryClick)
-                        }
+                        TimelineList(journalItemsList, onAddEntryClick)
                     }
                 }
             }
@@ -132,54 +121,7 @@ fun TimelineScreen(
 }
 
 @Composable
-private fun TimelineHeaderStateless(onAddEntryClick: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(horizontal = 24.dp, vertical = 16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text(
-                    text = "Your Story",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Black,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    letterSpacing = (-1).sp
-                )
-                Text(
-                    text = "A path through your emotions",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
-                    .clickable { onAddEntryClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Create,
-                    contentDescription = "New Entry",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun TimelineListStateless(
+fun TimelineList(
     items: List<JournalItemDBModel>,
     onAddEntryClick: () -> Unit
 ) {
@@ -196,30 +138,35 @@ private fun TimelineListStateless(
                     strokeWidth = 3.dp.toPx()
                 )
             }
-            .padding(horizontal = 16.dp)
     ) {
         item {
+            Spacer(modifier = Modifier.height(8.dp))
             DailyHookStateless(onAddEntryClick)
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        itemsIndexed(
-            items = items,
-            key = { _, item -> item.id }
-        ) { _, item ->
-            TimelineMomentStateless(item)
+        if (items.isEmpty()) {
+            item { EmptyTimelineStateStateless(onAddEntryClick) }
+        } else {
+            itemsIndexed(
+                items = items,
+                key = { _, item -> item.id }
+            ) { _, item ->
+                TimelineMomentStateless(item)
+            }
         }
 
-        item { Spacer(modifier = Modifier.height(40.dp)) }
+        item { Spacer(modifier = Modifier.height(80.dp)) }
     }
 }
 
 @Composable
-private fun DailyHookStateless(onClick: () -> Unit) {
+fun DailyHookStateless(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 56.dp, end = 8.dp)
+            .padding(horizontal = 24.dp)
+            .padding(start = 32.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
             .border(
@@ -257,15 +204,14 @@ private fun DailyHookStateless(onClick: () -> Unit) {
 }
 
 @Composable
-private fun TimelineMomentStateless(item: JournalItemDBModel) {
+fun TimelineMomentStateless(item: JournalItemDBModel) {
     val moodColor = getMoodColor(item.mood)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
     ) {
-        // Milestone Orb
         Box(
             modifier = Modifier
                 .width(48.dp)
@@ -286,7 +232,6 @@ private fun TimelineMomentStateless(item: JournalItemDBModel) {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Glass Moment Card
         AnimatedVisibility(
             visible = true,
             enter = fadeIn() + slideInVertically(
@@ -302,7 +247,10 @@ private fun TimelineMomentStateless(item: JournalItemDBModel) {
                     .border(
                         width = 1.dp,
                         brush = Brush.horizontalGradient(
-                            colors = listOf(moodColor.copy(alpha = 0.35f), Color.Transparent)
+                            colors = listOf(
+                                moodColor.copy(alpha = 0.35f),
+                                Color.Transparent
+                            )
                         ),
                         shape = RoundedCornerShape(28.dp)
                     )
@@ -335,9 +283,7 @@ private fun TimelineMomentStateless(item: JournalItemDBModel) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
                     }
-
                     Spacer(modifier = Modifier.height(12.dp))
-
                     Text(
                         text = item.content,
                         style = MaterialTheme.typography.bodyLarge,
@@ -346,10 +292,7 @@ private fun TimelineMomentStateless(item: JournalItemDBModel) {
                         maxLines = 4,
                         overflow = TextOverflow.Ellipsis
                     )
-
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    // Subtle Mood Tag
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
@@ -370,7 +313,7 @@ private fun TimelineMomentStateless(item: JournalItemDBModel) {
 }
 
 @Composable
-private fun EmptyTimelineStateStateless(onAddEntryClick: () -> Unit) {
+fun EmptyTimelineStateStateless(onAddEntryClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -423,13 +366,13 @@ fun TimelineScreenPreview() {
             journalItemsList = listOf(
                 JournalItemDBModel(
                     "1",
-                    "Found some peace in nature during my walk.",
+                    "Found some peace.",
                     MoodsEnum.RELAXED,
                     System.currentTimeMillis()
                 ),
                 JournalItemDBModel(
                     "2",
-                    "A bit stressed about the upcoming deadline.",
+                    "A bit stressed.",
                     MoodsEnum.STRESSED,
                     System.currentTimeMillis() - 3600000
                 )

@@ -35,10 +35,10 @@ class MainActivity2 : ComponentActivity() {
                     if (isOnboardingCompleted == null || username.isEmpty()) return@LaunchedEffect
 
                     val targetActivity = if (isOnboardingCompleted == true) {
-                        TimelineActivity::class.java
+                        HomeActivity2::class.java
                     } else {
                         // Move forward to Onboarding even if false
-                        TimelineActivity::class.java
+                        HomeActivity2::class.java
                     }
 
                     targetActivity.let {

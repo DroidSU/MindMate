@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,7 +36,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -58,6 +56,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.sujoy.mindmate.R
 import com.sujoy.mindmate.data.models.AppUiState
 import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.MoodsEnum
@@ -91,22 +96,11 @@ fun JournalEntryScreen(
     }
 
     if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { onCloseDialog() },
-            confirmButton = {
-                TextButton(onClick = { onCloseDialog() }) {
-                    Text("OK")
-                }
-            },
-            title = { Text("Analysis Result") },
-            text = {
-                Column {
-                    Text("Detected Mood: ${analyzedMoodObject.mood}")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Message: ${analyzedMoodObject.message}")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Sentiment Score: ${analyzedMoodObject.sentimentScore}")
-                }
+        AnalysisSuccessDialog(
+            analyzedMood = analyzedMoodObject,
+            onDismiss = {
+                showDialog = false
+                onCloseDialog()
             }
         )
     }
@@ -204,6 +198,112 @@ fun JournalEntryScreen(
                         moodColor = animatedMoodColor,
                         onClick = onSaveClick
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AnalysisSuccessDialog(
+    analyzedMood: JournalAnalyzedDbModel,
+    onDismiss: () -> Unit
+) {
+    val moodEnum = try {
+        MoodsEnum.valueOf(analyzedMood.mood.uppercase())
+    } catch (e: Exception) {
+        MoodsEnum.NEUTRAL
+    }
+    val moodColor = getMoodColor(moodEnum)
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.anim_sloth_meditate))
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.4f))
+                .clickable { onDismiss() },
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 32.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(32.dp))
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(moodColor.copy(alpha = 0.5f), Color.Transparent)
+                        ),
+                        shape = RoundedCornerShape(32.dp)
+                    )
+                    .padding(32.dp)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LottieAnimation(
+                        composition = composition,
+                        iterations = LottieConstants.IterateForever,
+                        modifier = Modifier.size(160.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Your thoughts are safe",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "I've noted that you're feeling ${analyzedMood.mood.lowercase()}.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Supportive Message Box
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(moodColor.copy(alpha = 0.1f))
+                            .padding(20.dp)
+                    ) {
+                        Text(
+                            text = analyzedMood.message,
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth(),
+                            lineHeight = 24.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = moodColor),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                    ) {
+                        Text(
+                            text = "Finish Reflection",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }
