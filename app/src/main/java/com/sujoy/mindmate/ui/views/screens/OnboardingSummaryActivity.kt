@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.LocalGradientColors
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.ui.views.HomeActivity
 import com.sujoy.mindmate.ui.vm.OnboardingViewModel
 import com.sujoy.mindmate.ui.vm.ViewModelFactory
 import kotlinx.coroutines.delay

@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.ui.views.HomeActivity
 import com.sujoy.mindmate.utils.DataStoreManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay

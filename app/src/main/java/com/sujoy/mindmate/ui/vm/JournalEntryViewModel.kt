@@ -32,6 +32,9 @@ class JournalEntryViewModel @Inject constructor(
     private val _selectedMood = MutableStateFlow(MoodsEnum.NEUTRAL)
     val selectedMood = _selectedMood.asStateFlow()
 
+    private val _moodScore = MutableStateFlow(0.5f)
+    val moodScore = _moodScore.asStateFlow()
+
     private val journalId = MutableStateFlow("")
     private val userName = MutableStateFlow("")
 
@@ -53,6 +56,10 @@ class JournalEntryViewModel @Inject constructor(
 
     fun onMoodSelected(mood: MoodsEnum) {
         _selectedMood.value = mood
+    }
+
+    fun onMoodScoreChanged(score: Float) {
+        _moodScore.value = score
     }
 
     fun analyzeEntry() {
@@ -81,6 +88,7 @@ class JournalEntryViewModel @Inject constructor(
     fun onAnalysisSuccess() {
         _entryText.value = ""
         _selectedMood.value = MoodsEnum.NEUTRAL
+        _moodScore.value = 0.5f
         _uiState.value = AppUiState.Success
     }
 
@@ -96,7 +104,8 @@ class JournalEntryViewModel @Inject constructor(
                 mood = _selectedMood.value,
                 timeStamp = System.currentTimeMillis(),
                 analyzedId = "",
-                sentimentScore = 0f
+                sentimentScore = 0f,
+                moodScore = _moodScore.value
             )
 
             databaseRepository.saveJournalItem(newItem)

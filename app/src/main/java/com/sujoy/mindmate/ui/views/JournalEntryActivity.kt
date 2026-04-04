@@ -26,6 +26,7 @@ class JournalEntryActivity : ComponentActivity() {
                 val uiState by viewModel.uiState.collectAsState()
                 val entryText by viewModel.entryText.collectAsState()
                 val selectedMood by viewModel.selectedMood.collectAsState()
+                val moodScore by viewModel.moodScore.collectAsState()
                 val analyzedMoodObject by viewModel.analyzedMood.collectAsState()
 
 
@@ -33,12 +34,16 @@ class JournalEntryActivity : ComponentActivity() {
                     uiState = uiState,
                     textContent = entryText,
                     selectedMood = selectedMood,
+                    moodScore = moodScore,
                     analyzedMoodObject = analyzedMoodObject,
                     onTextChange = {
                         viewModel.onEntryTextChanged(it)
                     },
                     onMoodSelected = {
                         viewModel.onMoodSelected(it)
+                    },
+                    onMoodScoreChanged = { score ->
+                        viewModel.onMoodScoreChanged(score)
                     },
                     onSaveClick = {
                         viewModel.saveEntry()

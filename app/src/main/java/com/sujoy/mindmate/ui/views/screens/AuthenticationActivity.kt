@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.ui.views.MainActivity
 import com.sujoy.mindmate.ui.vm.AuthenticationViewModel
 import com.sujoy.mindmate.ui.vm.ViewModelFactory
 

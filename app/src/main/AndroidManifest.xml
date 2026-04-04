@@ -48,12 +48,7 @@
             android:exported="false"
             android:label="@string/title_activity_onboarding_screen"
             android:theme="@style/Theme.MindMate" />
-        <activity
-            android:name=".ui.views.screens.NewJournalActivity"
-            android:exported="false"
-            android:label="@string/title_activity_journal"
-            android:theme="@style/Theme.MindMate"
-            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".ui.views.screens.AuthenticationActivity"
             android:exported="false"
