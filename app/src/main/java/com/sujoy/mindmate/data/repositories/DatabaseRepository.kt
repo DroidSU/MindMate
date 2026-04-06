@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DatabaseRepository {
     fun getJournalItems(): Flow<List<JournalItemDBModel>>
+    fun getFirst10JournalItems(): Flow<List<JournalItemDBModel>>
     suspend fun saveJournalItem(item: JournalItemDBModel)
 
     suspend fun updateSentimentScore(id: String, score: Float)

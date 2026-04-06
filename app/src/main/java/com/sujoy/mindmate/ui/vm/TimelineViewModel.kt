@@ -33,7 +33,7 @@ class TimelineViewModel @Inject constructor(val databaseRepository: DatabaseRepo
         _uiState.value = AppUiState.Loading
         viewModelScope.launch {
             try {
-                databaseRepository.getJournalItems().collect {
+                databaseRepository.getFirst10JournalItems().collect {
                     _journalItemList.value = it
 
                     _uiState.value = AppUiState.Success

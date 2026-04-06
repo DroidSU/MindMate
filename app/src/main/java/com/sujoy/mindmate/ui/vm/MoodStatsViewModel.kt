@@ -51,11 +51,10 @@ class MoodStatsViewModel @Inject constructor(
     private fun MoodsEnum.toGraphValue(): Float {
         return when (this) {
             MoodsEnum.HAPPY -> 1.0f
-            MoodsEnum.MOTIVATED -> 0.8f
-            MoodsEnum.RELAXED -> 0.5f
+            MoodsEnum.ENERGETIC -> 0.8f
+            MoodsEnum.CALM -> 0.5f
             MoodsEnum.NEUTRAL -> 0.0f
             MoodsEnum.ANXIOUS -> -0.3f
-            MoodsEnum.STRESSED -> -0.6f
             MoodsEnum.SAD -> -0.8f
             MoodsEnum.ANGRY -> -1.0f
         }

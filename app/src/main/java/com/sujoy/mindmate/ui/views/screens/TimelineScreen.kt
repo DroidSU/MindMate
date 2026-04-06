@@ -367,13 +367,13 @@ fun TimelineScreenPreview() {
                 JournalItemDBModel(
                     "1",
                     "Found some peace.",
-                    MoodsEnum.RELAXED,
+                    MoodsEnum.NEUTRAL,
                     System.currentTimeMillis()
                 ),
                 JournalItemDBModel(
                     "2",
                     "A bit stressed.",
-                    MoodsEnum.STRESSED,
+                    MoodsEnum.NEUTRAL,
                     System.currentTimeMillis() - 3600000
                 )
             )

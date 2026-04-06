@@ -11,6 +11,10 @@ class DatabaseRepositoryImpl(private val appDAO: AppDAO) :
         return appDAO.getAllJournals()
     }
 
+    override fun getFirst10JournalItems(): Flow<List<JournalItemDBModel>> {
+        return appDAO.getFirst10Journals()
+    }
+
     override suspend fun saveJournalItem(item: JournalItemDBModel) {
         appDAO.insertJournal(item)
     }

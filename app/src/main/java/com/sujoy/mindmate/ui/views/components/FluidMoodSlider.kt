@@ -1,38 +1,36 @@
 package com.sujoy.mindmate.ui.views.components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sujoy.mindmate.data.models.MoodsEnum
 import com.sujoy.mindmate.utils.UtilityMethods.Companion.getMoodColor
 import com.sujoy.mindmate.utils.UtilityMethods.Companion.getMoodEmoji
+import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
@@ -42,18 +40,7 @@ fun FluidMoodSlider(
     onMoodDetected: (MoodsEnum) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Map the 0-1 value to our MoodsEnum
-    val moods = listOf(
-        MoodsEnum.SAD,
-        MoodsEnum.ANGRY,
-        MoodsEnum.ANXIOUS,
-        MoodsEnum.STRESSED,
-        MoodsEnum.NEUTRAL,
-        MoodsEnum.RELAXED,
-        MoodsEnum.MOTIVATED,
-        MoodsEnum.HAPPY
-    )
-
+    val moods = MoodsEnum.entries.toList()
     val currentMoodIndex = (value * (moods.size - 1)).toInt().coerceIn(0, moods.size - 1)
     val currentMood = moods[currentMoodIndex]
 
@@ -61,109 +48,149 @@ fun FluidMoodSlider(
         onMoodDetected(currentMood)
     }
 
-    val moodColor = getMoodColor(currentMood)
-    val animatedColor by animateColorAsState(targetValue = moodColor, label = "fluidColor")
-
-    val infiniteTransition = rememberInfiniteTransition(label = "wave")
-    val waveOffset by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 2 * Math.PI.toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+    val animatedValue by animateFloatAsState(
+        targetValue = value,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessLow
         ),
-        label = "waveOffset"
+        label = "sliderValue"
     )
+
+    val moodColor = getMoodColor(currentMood)
+    val animatedMoodColor by animateColorAsState(
+        targetValue = moodColor,
+        animationSpec = spring(stiffness = Spring.StiffnessLow),
+        label = "moodColor"
+    )
+
+    // Pre-calculate colors since getMoodColor is a Composable
+    val moodColors = moods.map { getMoodColor(it) }
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(32.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            .fillMaxWidth()
+            .height(280.dp)
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
-                    onValueChange((offset.x / size.width).coerceIn(0f, 1f))
+                    onValueChange(calculateValueFromOffset(offset, size))
                 }
             }
             .pointerInput(Unit) {
                 detectDragGestures { change, _ ->
-                    onValueChange((change.position.x / size.width).coerceIn(0f, 1f))
+                    onValueChange(calculateValueFromOffset(change.position, size))
                 }
             }
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
-            val fillWidth = width * value
 
-            val path = Path().apply {
-                moveTo(0f, height)
-                lineTo(0f, height * 0.5f)
+            // Curve parameters
+            val arcRadius = width * 0.45f
+            val centerX = width / 2
+            val centerY = height * 1.05f
 
-                val waveAmplitude = 15f
-                val waveFrequency = 0.05f
-                for (x in 0..fillWidth.toInt()) {
-                    val y = height * 0.5f + waveAmplitude * sin(x * waveFrequency + waveOffset)
-                    lineTo(x.toFloat(), y)
+            val startAngle = 210f
+            val sweepAngle = 120f
+
+            // Draw the curved cylinder sections
+            val strokeWidth = 20.dp.toPx()
+
+            moods.forEachIndexed { index, mood ->
+                val sectionSweep = sweepAngle / moods.size
+                val sectionStart = startAngle + (index * sectionSweep)
+                val mColor = moodColors[index]
+
+                drawArc(
+                    color = mColor.copy(alpha = 0.8f),
+                    startAngle = sectionStart,
+                    sweepAngle = sectionSweep,
+                    useCenter = false,
+                    topLeft = Offset(centerX - arcRadius, centerY - arcRadius),
+                    size = Size(arcRadius * 2, arcRadius * 2),
+                    style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
+                )
+
+                // Labels (Emojis)
+                val midAngle = sectionStart + sectionSweep / 2
+                val angleRad = Math.toRadians(midAngle.toDouble())
+
+                val labelRadius = arcRadius + 32.dp.toPx()
+
+                val labelX = centerX + labelRadius * cos(angleRad).toFloat()
+                val labelY = centerY + labelRadius * sin(angleRad).toFloat()
+
+                // Draw Text (Emoji)
+                rotate(degrees = midAngle + 90f, pivot = Offset(labelX, labelY)) {
+                    drawContext.canvas.nativeCanvas.apply {
+                        val paint = android.graphics.Paint().apply {
+                            textSize = 22.sp.toPx()
+                            textAlign = android.graphics.Paint.Align.CENTER
+                        }
+                        drawText(getMoodEmoji(mood), labelX, labelY, paint)
+                    }
                 }
-
-                lineTo(fillWidth, height)
-                close()
             }
 
-            drawPath(
-                path = path,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        animatedColor.copy(alpha = 0.8f),
-                        animatedColor.copy(alpha = 0.4f)
-                    )
-                )
+            // Draw the Handle (Glow Ball)
+            val handleAngle = startAngle + (animatedValue * sweepAngle)
+            val handleAngleRad = Math.toRadians(handleAngle.toDouble())
+            val handleX = centerX + arcRadius * cos(handleAngleRad).toFloat()
+            val handleY = centerY + arcRadius * sin(handleAngleRad).toFloat()
+
+            // Outer glow
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(animatedMoodColor.copy(alpha = 0.6f), Color.Transparent),
+                    center = Offset(handleX, handleY),
+                    radius = 20.dp.toPx()
+                ),
+                radius = 20.dp.toPx(),
+                center = Offset(handleX, handleY)
             )
 
-            val secondPath = Path().apply {
-                moveTo(0f, height)
-                lineTo(0f, height * 0.55f)
-                val waveAmplitude = 10f
-                val waveFrequency = 0.04f
-                for (x in 0..fillWidth.toInt()) {
-                    val y =
-                        height * 0.55f + waveAmplitude * sin(x * waveFrequency - waveOffset * 0.8f)
-                    lineTo(x.toFloat(), y)
-                }
-                lineTo(fillWidth, height)
-                close()
-            }
-            drawPath(
-                path = secondPath,
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        animatedColor.copy(alpha = 0.4f),
-                        animatedColor.copy(alpha = 0.1f)
-                    )
-                )
+            // Inner ball
+            drawCircle(
+                color = Color.White,
+                radius = 8.dp.toPx(),
+                center = Offset(handleX, handleY)
             )
-        }
-
-        // Floating Emoji and Label
-        Column(
-            modifier = Modifier.align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = getMoodEmoji(currentMood),
-                fontSize = 44.sp
-            )
-            Text(
-                text = currentMood.name.lowercase().replaceFirstChar { it.uppercase() },
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = if (value > 0.4f) Color.White.copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = "${(value * 100).toInt()}%",
-                style = MaterialTheme.typography.bodySmall,
-                color = if (value > 0.4f) Color.White.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant
+            drawCircle(
+                color = animatedMoodColor,
+                radius = 6.dp.toPx(),
+                center = Offset(handleX, handleY)
             )
         }
     }
+}
+
+private fun calculateValueFromOffset(offset: Offset, size: IntSize): Float {
+    val width = size.width.toFloat()
+    val height = size.height.toFloat()
+    val centerX = width / 2
+    val centerY = height * 1.05f
+
+    val dx = offset.x - centerX
+    val dy = offset.y - centerY
+
+    var angle = Math.toDegrees(Math.atan2(dy.toDouble(), dx.toDouble())).toFloat()
+    if (angle < 0) angle += 360f
+
+    val startAngle = 210f
+    val sweepAngle = 120f
+
+    // Normalize angle to 0..sweepAngle
+    var normalizedAngle = angle - startAngle
+    if (normalizedAngle < -180) normalizedAngle += 360f
+    if (normalizedAngle > 180) normalizedAngle -= 360f
+
+    return (normalizedAngle / sweepAngle).coerceIn(0f, 1f)
+}
+
+private fun Color.toArgb(): Int {
+    return (this.alpha * 255.0f + 0.5f).toInt() shl 24 or
+            ((this.red * 255.0f + 0.5f).toInt() shl 16) or
+            ((this.green * 255.0f + 0.5f).toInt() shl 8) or
+            (this.blue * 255.0f + 0.5f).toInt()
 }

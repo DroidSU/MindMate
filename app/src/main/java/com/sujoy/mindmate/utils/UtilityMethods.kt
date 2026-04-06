@@ -19,8 +19,6 @@ import com.sujoy.mindmate.ui.theme.MoodRelaxedDark
 import com.sujoy.mindmate.ui.theme.MoodRelaxedLight
 import com.sujoy.mindmate.ui.theme.MoodSadDark
 import com.sujoy.mindmate.ui.theme.MoodSadLight
-import com.sujoy.mindmate.ui.theme.MoodStressedDark
-import com.sujoy.mindmate.ui.theme.MoodStressedLight
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -82,10 +80,9 @@ class UtilityMethods {
                 MoodsEnum.HAPPY -> if (isDark) MoodHappyDark else MoodHappyLight
                 MoodsEnum.SAD -> if (isDark) MoodSadDark else MoodSadLight
                 MoodsEnum.ANGRY -> if (isDark) MoodAngryDark else MoodAngryLight
-                MoodsEnum.STRESSED -> if (isDark) MoodStressedDark else MoodStressedLight
                 MoodsEnum.ANXIOUS -> if (isDark) MoodAnxiousDark else MoodAnxiousLight
-                MoodsEnum.RELAXED -> if (isDark) MoodRelaxedDark else MoodRelaxedLight
-                MoodsEnum.MOTIVATED -> if (isDark) MoodMotivatedDark else MoodMotivatedLight
+                MoodsEnum.CALM -> if (isDark) MoodRelaxedDark else MoodRelaxedLight
+                MoodsEnum.ENERGETIC -> if (isDark) MoodMotivatedDark else MoodMotivatedLight
                 MoodsEnum.NEUTRAL -> if (isDark) MoodNeutralDark else MoodNeutralLight
             }
         }
@@ -94,11 +91,10 @@ class UtilityMethods {
             return when (mood) {
                 MoodsEnum.HAPPY -> "😊"
                 MoodsEnum.SAD -> "😔"
-                MoodsEnum.ANGRY -> "😠"
-                MoodsEnum.STRESSED -> "😫"
+                MoodsEnum.ANGRY -> "😡"
                 MoodsEnum.ANXIOUS -> "😟"
-                MoodsEnum.RELAXED -> "😌"
-                MoodsEnum.MOTIVATED -> "💪"
+                MoodsEnum.CALM -> "😌"
+                MoodsEnum.ENERGETIC -> "🔥"
                 MoodsEnum.NEUTRAL -> "😐"
             }
         }

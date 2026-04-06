@@ -19,6 +19,9 @@ interface AppDAO {
     @Query("SELECT * FROM " + ConstantsManager.TABLE_JOURNAL_ITEMS + " ORDER BY " + ConstantsManager.TABLE_JOURNAL_TIMESTAMP + " DESC")
     fun getAllJournals(): Flow<List<JournalItemDBModel>>
 
+    @Query("SELECT * FROM " + ConstantsManager.TABLE_JOURNAL_ITEMS + " ORDER BY " + ConstantsManager.TABLE_JOURNAL_TIMESTAMP + " DESC LIMIT 10")
+    fun getFirst10Journals(): Flow<List<JournalItemDBModel>>
+
     @Query("UPDATE " + ConstantsManager.TABLE_JOURNAL_ITEMS + " SET " + ConstantsManager.SENTIMENT_SCORE + " = :score, analyzedId = :analysisId WHERE " + ConstantsManager.JOURNAL_ID + " = :id")
     suspend fun updateSentimentAndAnalysisId(id: String, score: Float, analysisId: String)
 

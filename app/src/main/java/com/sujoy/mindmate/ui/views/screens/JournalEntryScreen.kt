@@ -1,16 +1,9 @@
 package com.sujoy.mindmate.ui.views.screens
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,9 +21,12 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +58,7 @@ enum class JournalEntryStep {
     WRITING, MOOD_SELECTION
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun JournalEntryScreen(
     uiState: AppUiState,
@@ -83,7 +79,8 @@ fun JournalEntryScreen(
         label = "moodColor"
     )
 
-    var currentStep by remember { mutableStateOf(JournalEntryStep.WRITING) }
+    var showMoodPicker by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showDialog by remember { mutableStateOf(false) }
 
     if (analyzedMoodObject.mood.isNotEmpty()) {
@@ -141,16 +138,14 @@ fun JournalEntryScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = if (currentStep == JournalEntryStep.WRITING) "Reflect" else "Feeling",
+                    text = "Reflect",
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.onBackground,
                     letterSpacing = (-1.5).sp
                 )
                 Text(
-                    text = if (currentStep == JournalEntryStep.WRITING)
-                        "Transform your feelings into words"
-                    else "How deep is this feeling?",
+                    text = "Transform your feelings into words",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     textAlign = TextAlign.Center
@@ -158,48 +153,11 @@ fun JournalEntryScreen(
 
                 Spacer(modifier = Modifier.height(48.dp))
 
-                AnimatedContent(
-                    targetState = currentStep,
-                    transitionSpec = {
-                        if (targetState > initialState) {
-                            slideInHorizontally { it } + fadeIn() togetherWith
-                                    slideOutHorizontally { -it } + fadeOut()
-                        } else {
-                            slideInHorizontally { -it } + fadeIn() togetherWith
-                                    slideOutHorizontally { it } + fadeOut()
-                        }.using(SizeTransform(clip = false))
-                    },
-                    label = "stepTransition"
-                ) { step ->
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        if (step == JournalEntryStep.WRITING) {
-                            EntrySheet(
-                                text = textContent,
-                                onTextChange = onTextChange,
-                                moodColor = animatedMoodColor
-                            )
-                        } else {
-                            Text(
-                                text = "How are you feeling?",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
-                            )
-
-                            Spacer(modifier = Modifier.height(32.dp))
-
-                            FluidMoodSlider(
-                                value = moodScore,
-                                onValueChange = onMoodScoreChanged,
-                                onMoodDetected = onMoodSelected,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(240.dp)
-                                    .padding(horizontal = 8.dp)
-                            )
-                        }
-                    }
-                }
+                EntrySheet(
+                    text = textContent,
+                    onTextChange = onTextChange,
+                    moodColor = animatedMoodColor
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -210,26 +168,80 @@ fun JournalEntryScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (currentStep == JournalEntryStep.WRITING) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                            AttachmentTool(Icons.Default.AddAPhoto, animatedMoodColor)
-                            AttachmentTool(Icons.Default.Mic, animatedMoodColor)
-                        }
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        AttachmentTool(Icons.Default.AddAPhoto, animatedMoodColor)
+                        AttachmentTool(Icons.Default.Mic, animatedMoodColor)
+                    }
 
-                        ModernActionButton(
-                            text = "Next",
-                            isEnabled = textContent.isNotBlank(),
-                            moodColor = animatedMoodColor,
-                            onClick = { currentStep = JournalEntryStep.MOOD_SELECTION }
+                    ModernActionButton(
+                        text = "Next",
+                        isEnabled = textContent.isNotBlank(),
+                        moodColor = animatedMoodColor,
+                        onClick = { showMoodPicker = true }
+                    )
+                }
+            }
+        }
+
+        if (showMoodPicker) {
+            ModalBottomSheet(
+                onDismissRequest = { showMoodPicker = false },
+                sheetState = sheetState,
+                containerColor = MaterialTheme.colorScheme.surface,
+                tonalElevation = 8.dp
+            ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    // Subtle background ambient glow inside the sheet
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(450.dp)
+                            .blur(80.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        drawCircle(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    animatedMoodColor.copy(alpha = 0.12f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(size.width / 2, size.height / 2),
+                                radius = size.width * 0.8f
+                            )
                         )
-                    } else {
-                        ModernActionButton(
-                            text = "Back",
-                            isEnabled = true,
-                            moodColor = MaterialTheme.colorScheme.surfaceVariant,
-                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            onClick = { currentStep = JournalEntryStep.WRITING }
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Mood Check",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.Black,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
+                        Text(
+                            text = "How's your heart today?",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        FluidMoodSlider(
+                            value = moodScore,
+                            onValueChange = onMoodScoreChanged,
+                            onMoodDetected = onMoodSelected,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(280.dp)
+                        )
+
+                        Spacer(modifier = Modifier.height(32.dp))
 
                         ModernSaveButton(
                             isLoading = uiState is AppUiState.Loading,
@@ -237,6 +249,8 @@ fun JournalEntryScreen(
                             moodColor = animatedMoodColor,
                             onClick = onSaveClick
                         )
+
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
             }
@@ -271,7 +285,7 @@ fun JournalEntryScreenPreview() {
         JournalEntryScreen(
             uiState = AppUiState.Idle,
             textContent = "Exploring the calm and quiet moments of the afternoon.",
-            selectedMood = MoodsEnum.RELAXED,
+            selectedMood = MoodsEnum.NEUTRAL,
             moodScore = 0.7f,
             analyzedMoodObject = JournalAnalyzedDbModel(
                 id = "",

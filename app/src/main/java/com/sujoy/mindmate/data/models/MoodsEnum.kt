@@ -1,5 +1,5 @@
 package com.sujoy.mindmate.data.models
 
 enum class MoodsEnum {
-    HAPPY, SAD, ANGRY, STRESSED, ANXIOUS, RELAXED, MOTIVATED, NEUTRAL
+    ANGRY, SAD, ANXIOUS, NEUTRAL, CALM, HAPPY, ENERGETIC
 }
