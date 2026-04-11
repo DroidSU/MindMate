@@ -12,16 +12,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import com.sujoy.mindmate.ui.theme.MindMateTheme
 import com.sujoy.mindmate.ui.vm.MainViewModel
+import com.sujoy.mindmate.utils.SyncManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
+    @Inject
+    lateinit var syncManager: SyncManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        syncManager.startSync()
         setContent {
             MindMateTheme {
                 val context = LocalContext.current
@@ -37,8 +43,7 @@ class MainActivity : ComponentActivity() {
                     val targetActivity = if (isOnboardingCompleted == true) {
                         HomeActivity::class.java
                     } else {
-                        // Move forward to Onboarding even if false
-                        HomeActivity::class.java
+                        AuthenticationActivity::class.java
                     }
 
                     targetActivity.let {

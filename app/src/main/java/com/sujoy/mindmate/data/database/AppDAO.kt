@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.sujoy.mindmate.data.models.AverageMoodDBModel
 import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import com.sujoy.mindmate.utils.ConstantsManager
@@ -45,4 +46,29 @@ interface AppDAO {
         deleteJournal(id)
         deleteAnalysis(id)
     }
+
+    @Query("DELETE FROM " + ConstantsManager.TABLE_JOURNAL_ITEMS)
+    suspend fun deleteAllJournals()
+
+    @Query("DELETE FROM " + ConstantsManager.TABLE_JOURNAL_ANALYZED)
+    suspend fun deleteAllAnalysis()
+
+    @Transaction
+    suspend fun clearAllData() {
+        deleteAllJournals()
+        deleteAllAnalysis()
+        clearAverageMoods()
+    }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAverageMood(averageMood: AverageMoodDBModel)
+
+    @Query("SELECT * FROM journal_items WHERE date(timestamp / 1000, 'unixepoch', 'localtime') = :date")
+    suspend fun getJournalsForDate(date: String): List<JournalItemDBModel>
+
+    @Query("SELECT * FROM average_mood ORDER BY date DESC")
+    fun getAllAverageMoods(): Flow<List<AverageMoodDBModel>>
+
+    @Query("DELETE FROM average_mood")
+    suspend fun clearAverageMoods()
 }

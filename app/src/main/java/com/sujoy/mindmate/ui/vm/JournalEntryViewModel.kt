@@ -9,6 +9,7 @@ import com.sujoy.mindmate.data.models.MoodsEnum
 import com.sujoy.mindmate.data.repositories.DatabaseRepository
 import com.sujoy.mindmate.data.repositories.MlModelRepository
 import com.sujoy.mindmate.utils.DataStoreManager
+import com.sujoy.mindmate.utils.SyncManager
 import com.sujoy.mindmate.utils.UtilityMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class JournalEntryViewModel @Inject constructor(
     private val databaseRepository: DatabaseRepository,
     private val mlModelRepository: MlModelRepository,
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
+    private val syncManager: SyncManager
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<AppUiState> = MutableStateFlow(AppUiState.Idle)
@@ -109,6 +111,9 @@ class JournalEntryViewModel @Inject constructor(
             )
 
             databaseRepository.saveJournalItem(newItem)
+
+            // Trigger Background Work for Average Mood Calculation via SyncManager
+            syncManager.triggerAverageMoodSync(newItem.timeStamp)
 
             analyzeEntry()
         }

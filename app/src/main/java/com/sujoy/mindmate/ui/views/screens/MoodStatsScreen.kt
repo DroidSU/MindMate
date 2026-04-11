@@ -73,7 +73,11 @@ fun MoodStatsScreen(
                     letterSpacing = (-0.5).sp
                 )
                 Text(
-                    text = if (selectedPeriod == StatsPeriod.SEVEN_DAYS) "Your vibes this week" else "Your journey so far",
+                    text = when (selectedPeriod) {
+                        StatsPeriod.SEVEN_DAYS -> "Your vibes this week"
+                        StatsPeriod.FOURTEEN_DAYS -> "Your vibes these two weeks"
+                        StatsPeriod.THIRTY_DAYS -> "Your monthly journey"
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
@@ -108,14 +112,31 @@ fun MoodStatsScreen(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            if (dailyStats.isEmpty() || (selectedPeriod == StatsPeriod.ALL && dailyStats.values.all { it == 0f })) {
-                EmptyStatsState()
+            val requiredCount = when (selectedPeriod) {
+                StatsPeriod.SEVEN_DAYS -> 7
+                StatsPeriod.FOURTEEN_DAYS -> 14
+                StatsPeriod.THIRTY_DAYS -> 30
+            }
+
+            if (dailyStats.size < requiredCount) {
+                EmptyStatsState(
+                    message = when (selectedPeriod) {
+                        StatsPeriod.SEVEN_DAYS -> "Need 7 days of data to show your weekly pulse."
+                        StatsPeriod.FOURTEEN_DAYS -> "Need 14 days of data to show your bi-weekly pulse."
+                        StatsPeriod.THIRTY_DAYS -> "Need 30 days of data to show your monthly pulse."
+                    }
+                )
             } else {
                 MoodPulseGraph(dataPoints = dailyStats.values.toList())
             }
         }
 
-        if (dailyStats.isNotEmpty()) {
+        if (dailyStats.size >= (when (selectedPeriod) {
+                StatsPeriod.SEVEN_DAYS -> 7
+                StatsPeriod.FOURTEEN_DAYS -> 14
+                StatsPeriod.THIRTY_DAYS -> 30
+            })
+        ) {
             Spacer(modifier = Modifier.height(16.dp))
             MoodLegend()
         }
@@ -298,11 +319,15 @@ fun PeriodSelector(
                     .clip(CircleShape)
                     .background(bgColor)
                     .clickable { onPeriodSelected(period) }
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (period == StatsPeriod.SEVEN_DAYS) "7D" else "All",
+                    text = when (period) {
+                        StatsPeriod.SEVEN_DAYS -> "7D"
+                        StatsPeriod.FOURTEEN_DAYS -> "14D"
+                        StatsPeriod.THIRTY_DAYS -> "30D"
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = contentColor
@@ -313,7 +338,7 @@ fun PeriodSelector(
 }
 
 @Composable
-fun EmptyStatsState() {
+fun EmptyStatsState(message: String) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(32.dp)
@@ -333,7 +358,7 @@ fun EmptyStatsState() {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Every story begins with a single word. Start journaling to map your emotional landscape.",
+            text = message,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,

@@ -1,6 +1,7 @@
 package com.sujoy.mindmate.data.repositories
 
 import com.sujoy.mindmate.data.database.AppDAO
+import com.sujoy.mindmate.data.models.AverageMoodDBModel
 import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import kotlinx.coroutines.flow.Flow
@@ -33,5 +34,21 @@ class DatabaseRepositoryImpl(private val appDAO: AppDAO) :
 
     override suspend fun deleteJournal(id: String) {
         appDAO.deleteJournalReference(id)
+    }
+
+    override suspend fun clearAllData() {
+        appDAO.clearAllData()
+    }
+
+    override suspend fun getJournalsForDate(date: String): List<JournalItemDBModel> {
+        return appDAO.getJournalsForDate(date)
+    }
+
+    override suspend fun insertAverageMood(averageMood: AverageMoodDBModel) {
+        appDAO.insertAverageMood(averageMood)
+    }
+
+    override fun getAllAverageMoods(): Flow<List<AverageMoodDBModel>> {
+        return appDAO.getAllAverageMoods()
     }
 }

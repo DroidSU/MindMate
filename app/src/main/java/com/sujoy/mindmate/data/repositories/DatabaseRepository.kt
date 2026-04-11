@@ -1,5 +1,6 @@
 package com.sujoy.mindmate.data.repositories
 
+import com.sujoy.mindmate.data.models.AverageMoodDBModel
 import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import kotlinx.coroutines.flow.Flow
@@ -15,4 +16,10 @@ interface DatabaseRepository {
     suspend fun saveAnalysisAndUpdateScore(item: JournalAnalyzedDbModel)
 
     suspend fun deleteJournal(id: String)
+
+    suspend fun clearAllData()
+
+    suspend fun getJournalsForDate(date: String): List<JournalItemDBModel>
+    suspend fun insertAverageMood(averageMood: AverageMoodDBModel)
+    fun getAllAverageMoods(): Flow<List<AverageMoodDBModel>>
 }

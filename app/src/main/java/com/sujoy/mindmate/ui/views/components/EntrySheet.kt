@@ -38,11 +38,15 @@ fun EntrySheet(
             .fillMaxWidth()
             .height(300.dp)
             .clip(RoundedCornerShape(32.dp))
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
             .border(
                 width = 1.dp,
-                brush = Brush.verticalGradient(
-                    colors = listOf(moodColor.copy(alpha = 0.4f), Color.Transparent)
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.3f),
+                        moodColor.copy(alpha = 0.2f),
+                        Color.Transparent
+                    )
                 ),
                 shape = RoundedCornerShape(32.dp)
             )

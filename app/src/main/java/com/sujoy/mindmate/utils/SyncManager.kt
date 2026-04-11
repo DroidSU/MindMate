@@ -2,8 +2,10 @@ package com.sujoy.mindmate.utils
 
 import android.content.Context
 import androidx.work.Constraints
+import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,6 +33,18 @@ class SyncManager @Inject constructor(
             ExistingPeriodicWorkPolicy.KEEP,
             syncRequest
         )
+    }
+
+    fun triggerAverageMoodSync(timestamp: Long) {
+        val syncWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setInputData(
+                Data.Builder()
+                    .putString(SyncWorker.KEY_WORK_TYPE, SyncWorker.TYPE_AVERAGE_MOOD)
+                    .putLong(SyncWorker.KEY_TIMESTAMP, timestamp)
+                    .build()
+            )
+            .build()
+        workManager.enqueue(syncWorkRequest)
     }
 
     fun stopSync() {

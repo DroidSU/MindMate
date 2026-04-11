@@ -36,6 +36,12 @@ class HomeActivity : ComponentActivity() {
                     onPeriodSelected = { moodStatsViewModel.setPeriod(it) },
                     onAddEntryClick = {
                         startActivity(Intent(this@HomeActivity, JournalEntryActivity::class.java))
+                    },
+                    onSignOut = {
+                        timelineViewModel.signOut {
+                            startActivity(Intent(this@HomeActivity, MainActivity::class.java))
+                            finish()
+                        }
                     }
                 )
             }

@@ -12,19 +12,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddAPhoto
-import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -35,9 +41,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,9 +63,6 @@ import com.sujoy.mindmate.ui.views.components.ModernActionButton
 import com.sujoy.mindmate.ui.views.components.ModernSaveButton
 import com.sujoy.mindmate.utils.UtilityMethods.Companion.getMoodColor
 
-enum class JournalEntryStep {
-    WRITING, MOOD_SELECTION
-}
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -97,32 +103,52 @@ fun JournalEntryScreen(
         )
     }
 
+    val isKeyboardVisible = WindowInsets.ime.asPaddingValues().calculateBottomPadding() > 0.dp
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .drawBehind {
+                // Main Ambient Glow - Using drawRect to prevent clipping and ensure smooth fade
+                drawRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(animatedMoodColor.copy(alpha = 0.15f), Color.Transparent),
+                        center = Offset(size.width * 0.2f, size.height * 0.2f),
+                        radius = size.maxDimension * 0.8f
+                    )
+                )
+                // Bottom Corner Accent
+                drawRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(animatedMoodColor.copy(alpha = 0.1f), Color.Transparent),
+                        center = Offset(size.width * 0.8f, size.height * 0.8f),
+                        radius = size.maxDimension * 0.6f
+                    )
+                )
+                // Decorative Mesh Grid - More subtle and structured
+                clipRect {
+                    val step = 40.dp.toPx()
+                    val gridAlpha = 0.02f
+                    for (x in 0..(size.width / step).toInt()) {
+                        drawLine(
+                            color = animatedMoodColor.copy(alpha = gridAlpha),
+                            start = Offset(x * step, 0f),
+                            end = Offset(x * step, size.height),
+                            strokeWidth = 0.5.dp.toPx()
+                        )
+                    }
+                    for (y in 0..(size.height / step).toInt()) {
+                        drawLine(
+                            color = animatedMoodColor.copy(alpha = gridAlpha),
+                            start = Offset(0f, y * step),
+                            end = Offset(size.width, y * step),
+                            strokeWidth = 0.5.dp.toPx()
+                        )
+                    }
+                }
+            }
     ) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .blur(100.dp)
-        ) {
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(animatedMoodColor.copy(alpha = 0.15f), Color.Transparent),
-                    center = Offset(size.width * 0.2f, size.height * 0.2f),
-                    radius = size.width * 1.5f
-                )
-            )
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(animatedMoodColor.copy(alpha = 0.1f), Color.Transparent),
-                    center = Offset(size.width * 0.8f, size.height * 0.8f),
-                    radius = size.width * 1.2f
-                )
-            )
-        }
-
         Scaffold(
             containerColor = Color.Transparent,
             modifier = Modifier.fillMaxSize()
@@ -131,27 +157,51 @@ fun JournalEntryScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .statusBarsPadding()
-                    .padding(horizontal = 24.dp),
+                    .imePadding()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Modern Header with Glass Effect Icon
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(animatedMoodColor.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Rounded.AutoAwesome,
+                        contentDescription = null,
+                        tint = animatedMoodColor,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
                     text = "Reflect",
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Black,
                     color = MaterialTheme.colorScheme.onBackground,
-                    letterSpacing = (-1.5).sp
-                )
-                Text(
-                    text = "Transform your feelings into words",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                    textAlign = TextAlign.Center
+                    letterSpacing = (-1).sp
                 )
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text(
+                        text = "Transform your feelings into words",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
 
                 EntrySheet(
                     text = textContent,
@@ -159,26 +209,24 @@ fun JournalEntryScreen(
                     moodColor = animatedMoodColor
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        AttachmentTool(Icons.Default.AddAPhoto, animatedMoodColor)
-                        AttachmentTool(Icons.Default.Mic, animatedMoodColor)
+                // Modern Action bar
+                if (!isKeyboardVisible || textContent.isNotBlank()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ModernActionButton(
+                            text = "Next",
+                            isEnabled = textContent.isNotBlank(),
+                            moodColor = animatedMoodColor,
+                            onClick = { showMoodPicker = true }
+                        )
                     }
-
-                    ModernActionButton(
-                        text = "Next",
-                        isEnabled = textContent.isNotBlank(),
-                        moodColor = animatedMoodColor,
-                        onClick = { showMoodPicker = true }
-                    )
                 }
             }
         }
@@ -199,14 +247,14 @@ fun JournalEntryScreen(
                             .blur(80.dp)
                             .align(Alignment.Center)
                     ) {
-                        drawCircle(
+                        drawRect(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    animatedMoodColor.copy(alpha = 0.12f),
+                                    animatedMoodColor.copy(alpha = 0.15f),
                                     Color.Transparent
                                 ),
                                 center = Offset(size.width / 2, size.height / 2),
-                                radius = size.width * 0.8f
+                                radius = size.width * 0.7f
                             )
                         )
                     }

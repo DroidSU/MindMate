@@ -7,13 +7,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.sujoy.mindmate.data.models.AverageMoodDBModel
 import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import com.sujoy.mindmate.utils.ConstantsManager
 
 @Database(
-    entities = [JournalItemDBModel::class, JournalAnalyzedDbModel::class],
-    version = 3,
+    entities = [JournalItemDBModel::class, JournalAnalyzedDbModel::class, AverageMoodDBModel::class],
+    version = 4,
     exportSchema = false
 )
 
@@ -36,6 +37,16 @@ abstract class MindMateDatabase : RoomDatabase() {
 
         }
 
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `average_mood` (`date` TEXT NOT NULL, `avg_mood_score` REAL NOT NULL, PRIMARY KEY(`date`))
+                """.trimIndent()
+                )
+            }
+        }
+
         fun getDatabase(context: Context): MindMateDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -43,7 +54,7 @@ abstract class MindMateDatabase : RoomDatabase() {
                     MindMateDatabase::class.java,
                     "mind_mate_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_3_4)
                     .build()
                 INSTANCE = instance
                 instance

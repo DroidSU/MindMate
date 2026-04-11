@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +19,14 @@ android {
         targetSdk = 36
         versionCode = 2
         versionName = "2.2"
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(localPropertiesFile.inputStream())
+        }
+        val serverClientId = localProperties.getProperty("server_client_id") ?: ""
+        buildConfigField("String", "SERVER_CLIENT_ID", "\"$serverClientId\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,6 +50,7 @@ android {
     buildFeatures {
         compose = true
         mlModelBinding = true
+        buildConfig = true
     }
     androidResources {
         noCompress += "tflite"
@@ -79,6 +90,9 @@ dependencies {
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.auth.credentials)
+    implementation(libs.androidx.auth.play.services)
+    implementation(libs.googleid)
 
     // Hilt
     implementation(libs.hilt.android)

@@ -7,6 +7,7 @@ import com.sujoy.mindmate.data.models.AppUiState
 import com.sujoy.mindmate.data.models.JournalItemDBModel
 import com.sujoy.mindmate.data.repositories.DatabaseRepository
 import com.sujoy.mindmate.utils.ConstantsManager
+import com.sujoy.mindmate.utils.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TimelineViewModel @Inject constructor(val databaseRepository: DatabaseRepository) :
+class TimelineViewModel @Inject constructor(
+    val databaseRepository: DatabaseRepository,
+    private val dataStoreManager: DataStoreManager
+) :
     ViewModel() {
 
     private val _uiState = MutableStateFlow<AppUiState>(AppUiState.Idle)
@@ -41,6 +45,14 @@ class TimelineViewModel @Inject constructor(val databaseRepository: DatabaseRepo
             } catch (ex: Exception) {
                 Log.e(ConstantsManager.APP_TAG, "getJournalItems: ${ex.message.toString()}")
             }
+        }
+    }
+
+    fun signOut(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            databaseRepository.clearAllData()
+            dataStoreManager.clearData()
+            onComplete()
         }
     }
 }

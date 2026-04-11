@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "873817746755",
+    "firebase_url": "https://mindmate-bec8f-default-rtdb.firebaseio.com",
     "project_id": "mindmate-bec8f",
     "storage_bucket": "mindmate-bec8f.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.sujoy.mindmate"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "873817746755-58qiun57064pnil8ivnv19fgbfhbetdk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sujoy.mindmate",
+            "certificate_hash": "b92198ff69214689275da1e87377dc3a0ffa16fc"
+          }
+        },
+        {
+          "client_id": "873817746755-ejrkirqh6fgvoab1ld60jo4pbg7jsop6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCS8IFY2iaq3BOV2zuHsKEXOApeABF0Ph8"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "873817746755-ejrkirqh6fgvoab1ld60jo4pbg7jsop6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
