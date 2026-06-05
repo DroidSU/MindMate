@@ -27,22 +27,22 @@
         </provider>
 
         <activity
-            android:name=".ui.views.AuthenticationActivity"
+            android:name=".v1.ui.views.AuthenticationActivity"
             android:exported="false"
             android:label="@string/title_activity_authentication"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".ui.views.HomeActivity"
+            android:name=".v1.ui.views.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".ui.views.JournalEntryActivity"
+            android:name=".v1.ui.views.JournalEntryActivity"
             android:exported="false"
             android:label="@string/title_activity_journal_entry"
             android:theme="@style/Theme.MindMate" />
         <activity
-            android:name=".ui.views.MainActivity"
+            android:name=".v1.ui.views.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MindMate">
             <intent-filter>
