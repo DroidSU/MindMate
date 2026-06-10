@@ -1,9 +1,11 @@
 package com.sujoy.mindmate.v2.data.database
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.sujoy.mindmate.v2.data.models.MoodLog
 
+@Dao
 interface V2DatabaseDAO {
 
     @Insert

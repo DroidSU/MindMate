@@ -39,8 +39,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +50,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.sujoy.mindmate.R
 import com.sujoy.mindmate.v2.data.models.MoodProviderV2
 import com.sujoy.mindmate.v2.data.models.MoodV2
@@ -61,13 +58,13 @@ import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2ColorTokens
 import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2RadiusTokens
 import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2SpacingTokens
 import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2TypographyTokens
-import com.sujoy.mindmate.v2.ui.vm.DashboardV2ViewModel
 
 @Composable
 fun V2DashboardScreen(
-    viewModel: DashboardV2ViewModel = hiltViewModel()
+    userName: String,
+    currentMood: MoodV2?,
+    setCurrentMood: (MoodV2) -> Unit,
 ) {
-    val currentMood by viewModel.currentMood.collectAsState()
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -121,7 +118,7 @@ fun V2DashboardScreen(
 
                 // WELCOME TEXT
                 Text(
-                    text = "Good evening, Sujoy 👋",
+                    text = "Good evening, $userName 👋",
                     style = V2TypographyTokens.BodyMuted.copy(fontSize = 13.sp),
                     modifier = Modifier.padding(horizontal = V2SpacingTokens.Medium)
                 )
@@ -150,7 +147,9 @@ fun V2DashboardScreen(
             // 3. MOOD SELECTION CARD (Adaptive and Translucent)
             MoodSelectionCard(
                 selectedMood = currentMood,
-                onMoodSelected = { viewModel.storeSelectedMood(it) }
+                onMoodSelected = {
+                    setCurrentMood(it)
+                }
             )
         }
 
@@ -250,14 +249,14 @@ fun MoodItem(
         ) {
             Image(
                 painter = painterResource(id = mood.iconResId),
-                contentDescription = mood.mood,
+                contentDescription = mood.moodString,
                 modifier = Modifier.size(32.dp),
                 contentScale = ContentScale.FillBounds
             )
         }
         Spacer(modifier = Modifier.height(V2SpacingTokens.ExtraSmall))
         Text(
-            text = mood.mood,
+            text = mood.moodString,
             style = V2TypographyTokens.LabelLarge.copy(fontSize = 10.sp),
             color = if (isSelected) V2ColorTokens.DeepIndigo else V2ColorTokens.TextMuted,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
@@ -401,6 +400,10 @@ fun DashboardBottomNavigation() {
 @Composable
 fun V2DashboardPreview() {
     MindMateV2Theme {
-        V2DashboardScreen()
+        V2DashboardScreen(
+            userName = "Sujoy",
+            currentMood = MoodProviderV2.getMoodById(4),
+            setCurrentMood = {}
+        )
     }
 }

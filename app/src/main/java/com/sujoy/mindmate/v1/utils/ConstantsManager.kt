@@ -32,5 +32,9 @@ class ConstantsManager {
         const val REMINDER_OPT_1 = "Only when mood is risky"
         const val REMINDER_OPT_2 = "Daily check-in + mood checks"
         const val REMINDER_OPT_3 = "Fixed Daily Time"
+
+
+        // v2 constants
+        const val APP_TAG_V2 = "MindMateV2"
     }
 }

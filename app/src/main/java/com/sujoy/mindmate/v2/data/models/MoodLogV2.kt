@@ -10,9 +10,9 @@ import androidx.room.PrimaryKey
 )
 data class MoodLog(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val timestamp: Long,       // Time of the entry
-    val dateString: String,    // Format: "YYYY-MM-DD"
-    val mood: String,          // String representation of the MoodEnum
+    val timestamp: Long,
+    val dateString: String,
+    val mood: String,          // Mood string (e.g., "Happy", "Sad", "Angry") from MoodsEnumV2
     val moodScore: Int,        // Integer scale: 1 (Very Low) to 5 (Very High)
     val emotionalTag: String?  // Optional (e.g., "Anxious", "Calm", "Tired")
 )

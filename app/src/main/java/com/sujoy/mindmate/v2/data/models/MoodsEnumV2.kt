@@ -4,7 +4,7 @@ import com.sujoy.mindmate.R
 
 data class MoodV2(
     val id: Int,
-    val mood: String,
+    val moodString: String,
     val iconResId: Int,
     val graphValue: Float
 )
