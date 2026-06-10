@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.sujoy.mindmate.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 
 @Composable
 fun MoodIndicator(

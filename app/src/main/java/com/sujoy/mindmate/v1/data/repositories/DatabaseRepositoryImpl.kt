@@ -1,9 +1,9 @@
 package com.sujoy.mindmate.v1.data.repositories
 
-import com.sujoy.mindmate.data.database.AppDAO
-import com.sujoy.mindmate.data.models.AverageMoodDBModel
-import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
-import com.sujoy.mindmate.data.models.JournalItemDBModel
+import com.sujoy.mindmate.v1.data.database.AppDAO
+import com.sujoy.mindmate.v1.data.models.AverageMoodDBModel
+import com.sujoy.mindmate.v1.data.models.JournalAnalyzedDbModel
+import com.sujoy.mindmate.v1.data.models.JournalItemDBModel
 import kotlinx.coroutines.flow.Flow
 
 class DatabaseRepositoryImpl(private val appDAO: AppDAO) :

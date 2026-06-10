@@ -11,11 +11,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.sujoy.mindmate.ui.theme.MindMateTheme
-import com.sujoy.mindmate.ui.views.screens.HomeScreen
-import com.sujoy.mindmate.ui.views.screens.JournalScreen
-import com.sujoy.mindmate.ui.vm.HomeViewModel
-import com.sujoy.mindmate.ui.vm.TimelineViewModel
+import com.sujoy.mindmate.v1.ui.theme.MindMateTheme
+import com.sujoy.mindmate.v1.ui.views.screens.HomeScreen
+import com.sujoy.mindmate.v1.ui.views.screens.JournalScreen
+import com.sujoy.mindmate.v1.ui.vm.HomeViewModel
+import com.sujoy.mindmate.v1.ui.vm.TimelineViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -18,4 +18,5 @@
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="title_activity_journal_entry">JournalEntryActivity</string>
     <string name="title_activity_authentication">AuthenticationActivity</string>
+    <string name="title_activity_v2_dashboard">V2DashboardActivity</string>
 </resources>

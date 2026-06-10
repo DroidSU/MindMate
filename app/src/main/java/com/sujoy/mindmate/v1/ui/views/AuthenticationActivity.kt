@@ -20,7 +20,6 @@ import com.sujoy.mindmate.BuildConfig
 import com.sujoy.mindmate.v1.ui.theme.MindMateTheme
 import com.sujoy.mindmate.v1.ui.views.screens.AuthScreen
 import com.sujoy.mindmate.v1.ui.vm.AuthEvent
-import com.sujoy.mindmate.v1.ui.vm.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +59,11 @@ class AuthenticationActivity : ComponentActivity() {
             MindMateTheme {
                 AuthScreen(
                     uiState = uiState,
-                    onGoogleSignInClick = viewModel::onGoogleSignInClick
+                    onGoogleSignInClick = {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+//                        viewModel.onGoogleSignInClick()
+                    }
                 )
             }
         }

@@ -29,8 +29,8 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.sujoy.mindmate.R
-import com.sujoy.mindmate.ui.theme.LocalGradientColors
-import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.v1.ui.theme.LocalGradientColors
+import com.sujoy.mindmate.v1.ui.theme.MindMateTheme
 
 @Composable
 fun GetStarted(onGetStarted: () -> Unit) {

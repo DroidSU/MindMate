@@ -18,10 +18,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.sujoy.mindmate.ui.theme.md_theme_dark_primary
-import com.sujoy.mindmate.ui.theme.md_theme_dark_secondary
-import com.sujoy.mindmate.ui.theme.md_theme_light_primary
-import com.sujoy.mindmate.ui.theme.md_theme_light_secondary
 import kotlin.math.cos
 import kotlin.math.sin
 

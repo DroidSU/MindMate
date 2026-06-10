@@ -7,8 +7,8 @@ import com.google.firebase.ai.FirebaseAI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.sujoy.mindmate.data.models.MoodAnalysisResponse
-import com.sujoy.mindmate.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.models.MoodAnalysisResponse
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 import com.sujoy.mindmate.v1.utils.ConstantsManager
 import kotlinx.coroutines.tasks.await
 import org.json.JSONObject

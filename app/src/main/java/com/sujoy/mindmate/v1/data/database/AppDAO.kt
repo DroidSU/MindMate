@@ -5,9 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.sujoy.mindmate.data.models.AverageMoodDBModel
-import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
-import com.sujoy.mindmate.data.models.JournalItemDBModel
+import com.sujoy.mindmate.v1.data.models.AverageMoodDBModel
+import com.sujoy.mindmate.v1.data.models.JournalAnalyzedDbModel
+import com.sujoy.mindmate.v1.data.models.JournalItemDBModel
 import com.sujoy.mindmate.v1.utils.ConstantsManager
 import kotlinx.coroutines.flow.Flow
 

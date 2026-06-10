@@ -1,7 +1,7 @@
 package com.sujoy.mindmate.v1.data.repositories
 
 import com.google.firebase.auth.FirebaseUser
-import com.sujoy.mindmate.data.models.MoodAnalysisResponse
+import com.sujoy.mindmate.v1.data.models.MoodAnalysisResponse
 
 interface MindMateApiRepository {
     val currentUser: FirebaseUser?

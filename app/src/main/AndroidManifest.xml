@@ -14,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MindMate">
-
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -26,6 +25,11 @@
                 tools:node="remove" />
         </provider>
 
+        <activity
+            android:name=".v2.ui.views.V2AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_authentication"
+            android:theme="@style/Theme.MindMate" />
         <activity
             android:name=".v1.ui.views.AuthenticationActivity"
             android:exported="false"
@@ -51,6 +55,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".v2.ui.views.V2DashboardActivity"
+            android:exported="false"
+            android:label="@string/title_activity_v2_dashboard"
+            android:theme="@style/Theme.MindMate"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

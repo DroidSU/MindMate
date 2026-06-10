@@ -7,9 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.sujoy.mindmate.data.models.AverageMoodDBModel
-import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
-import com.sujoy.mindmate.data.models.JournalItemDBModel
+import com.sujoy.mindmate.v1.data.models.AverageMoodDBModel
+import com.sujoy.mindmate.v1.data.models.JournalAnalyzedDbModel
+import com.sujoy.mindmate.v1.data.models.JournalItemDBModel
 import com.sujoy.mindmate.v1.utils.ConstantsManager
 
 @Database(

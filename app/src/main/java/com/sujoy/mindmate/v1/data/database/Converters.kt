@@ -1,7 +1,7 @@
 package com.sujoy.mindmate.v1.data.database
 
 import androidx.room.TypeConverter
-import com.sujoy.mindmate.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 
 class Converters {
     @TypeConverter

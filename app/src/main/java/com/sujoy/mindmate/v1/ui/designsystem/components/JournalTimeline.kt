@@ -14,8 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.sujoy.mindmate.data.models.JournalItemDBModel
-import com.sujoy.mindmate.v1.ui.designsystem.theme.MindMateTheme
+import com.sujoy.mindmate.v1.data.models.JournalItemDBModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

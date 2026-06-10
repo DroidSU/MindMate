@@ -2,8 +2,8 @@ package com.sujoy.mindmate.v1.data.repositories
 
 import android.util.Log
 import com.google.mediapipe.tasks.text.textclassifier.TextClassifier
-import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
-import com.sujoy.mindmate.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.models.JournalAnalyzedDbModel
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 import com.sujoy.mindmate.v1.utils.ConstantsManager
 import com.sujoy.mindmate.v1.utils.UtilityMethods
 import kotlinx.coroutines.Dispatchers

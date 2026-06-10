@@ -10,8 +10,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import com.sujoy.mindmate.ui.theme.MindMateTheme
-import com.sujoy.mindmate.ui.vm.MainViewModel
+import com.sujoy.mindmate.v1.ui.theme.MindMateTheme
+import com.sujoy.mindmate.v1.ui.vm.MainViewModel
 import com.sujoy.mindmate.v1.utils.SyncManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
                     val targetActivity = if (isOnboardingCompleted == true) {
                         HomeActivity::class.java
                     } else {
-                        AuthenticationActivity::class.java
+                        com.sujoy.mindmate.v2.ui.views.V2AuthenticationActivity::class.java
                     }
 
                     targetActivity.let {

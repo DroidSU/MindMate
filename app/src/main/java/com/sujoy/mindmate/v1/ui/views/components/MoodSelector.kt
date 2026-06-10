@@ -12,8 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sujoy.mindmate.ui.theme.DarkColorScheme
-import com.sujoy.mindmate.ui.theme.LightColorScheme
+import com.sujoy.mindmate.v1.ui.theme.DarkColorScheme
+import com.sujoy.mindmate.v1.ui.theme.LightColorScheme
 import com.sujoy.mindmate.v1.utils.ConstantsManager
 
 @OptIn(ExperimentalLayoutApi::class)

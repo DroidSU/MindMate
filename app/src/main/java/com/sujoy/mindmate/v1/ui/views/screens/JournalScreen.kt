@@ -25,14 +25,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sujoy.mindmate.data.models.JournalItemDBModel
-import com.sujoy.mindmate.data.models.MoodsEnum
-import com.sujoy.mindmate.ui.designsystem.components.JournalFilterChip
-import com.sujoy.mindmate.ui.designsystem.components.JournalHeader
-import com.sujoy.mindmate.ui.designsystem.components.JournalSearchBar
-import com.sujoy.mindmate.ui.designsystem.components.JournalTimeline
-import com.sujoy.mindmate.ui.designsystem.components.MindMateBottomBar
-import com.sujoy.mindmate.ui.designsystem.theme.MindMateTheme
+import com.sujoy.mindmate.v1.data.models.JournalItemDBModel
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.ui.designsystem.components.JournalFilterChip
+import com.sujoy.mindmate.v1.ui.designsystem.components.JournalHeader
+import com.sujoy.mindmate.v1.ui.designsystem.components.JournalSearchBar
+import com.sujoy.mindmate.v1.ui.designsystem.components.JournalTimeline
+import com.sujoy.mindmate.v1.ui.designsystem.components.MindMateBottomBar
+import com.sujoy.mindmate.v1.ui.designsystem.theme.MindMateTheme
 
 @Composable
 fun JournalScreen(

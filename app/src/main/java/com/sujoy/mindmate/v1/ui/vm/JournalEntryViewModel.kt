@@ -2,12 +2,12 @@ package com.sujoy.mindmate.v1.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sujoy.mindmate.data.models.AppUiState
-import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
-import com.sujoy.mindmate.data.models.JournalItemDBModel
-import com.sujoy.mindmate.data.models.MoodsEnum
-import com.sujoy.mindmate.data.repositories.DatabaseRepository
-import com.sujoy.mindmate.data.repositories.MlModelRepository
+import com.sujoy.mindmate.v1.data.models.AppUiState
+import com.sujoy.mindmate.v1.data.models.JournalAnalyzedDbModel
+import com.sujoy.mindmate.v1.data.models.JournalItemDBModel
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.repositories.DatabaseRepository
+import com.sujoy.mindmate.v1.data.repositories.MlModelRepository
 import com.sujoy.mindmate.v1.utils.DataStoreManager
 import com.sujoy.mindmate.v1.utils.SyncManager
 import com.sujoy.mindmate.v1.utils.UtilityMethods

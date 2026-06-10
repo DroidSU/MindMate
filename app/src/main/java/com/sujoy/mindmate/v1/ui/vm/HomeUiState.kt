@@ -1,7 +1,7 @@
 package com.sujoy.mindmate.v1.ui.vm
 
-import com.sujoy.mindmate.data.models.JournalItemDBModel
-import com.sujoy.mindmate.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.models.JournalItemDBModel
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 
 data class HomeUiState(
     val username: String = "Sujoy",

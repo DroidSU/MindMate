@@ -25,7 +25,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sujoy.mindmate.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 import com.sujoy.mindmate.v1.utils.UtilityMethods.Companion.getMoodColor
 import com.sujoy.mindmate.v1.utils.UtilityMethods.Companion.getMoodEmoji
 import kotlin.math.cos

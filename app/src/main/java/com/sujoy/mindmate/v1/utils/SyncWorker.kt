@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.sujoy.mindmate.data.models.AverageMoodDBModel
-import com.sujoy.mindmate.data.repositories.DatabaseRepository
+import com.sujoy.mindmate.v1.data.models.AverageMoodDBModel
+import com.sujoy.mindmate.v1.data.repositories.DatabaseRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.text.SimpleDateFormat

@@ -7,9 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.sujoy.mindmate.ui.theme.MindMateTheme
-import com.sujoy.mindmate.ui.views.screens.JournalEntryScreen
-import com.sujoy.mindmate.ui.vm.JournalEntryViewModel
+import com.sujoy.mindmate.v1.ui.theme.MindMateTheme
+import com.sujoy.mindmate.v1.ui.views.screens.JournalEntryScreen
+import com.sujoy.mindmate.v1.ui.vm.JournalEntryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

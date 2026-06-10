@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.sujoy.mindmate.data.models.AppUiState
+import com.sujoy.mindmate.v1.data.models.AppUiState
 import com.sujoy.mindmate.v1.utils.ConstantsManager
 import com.sujoy.mindmate.v1.utils.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel

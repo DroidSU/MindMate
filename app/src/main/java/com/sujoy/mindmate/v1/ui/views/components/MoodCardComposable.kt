@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sujoy.mindmate.data.models.MoodDataModel
-import com.sujoy.mindmate.ui.theme.MindMateTheme
+import com.sujoy.mindmate.v1.data.models.MoodDataModel
+import com.sujoy.mindmate.v1.ui.theme.MindMateTheme
 import com.sujoy.mindmate.v1.utils.ConstantsManager
 
 @Composable

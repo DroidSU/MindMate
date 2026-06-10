@@ -3,10 +3,8 @@ package com.sujoy.mindmate.v1.ui.designsystem.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -15,10 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sujoy.mindmate.data.models.MoodsEnum
-import com.sujoy.mindmate.v1.ui.designsystem.theme.MindMateTheme
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 
 @Composable
 fun MoodSelector(

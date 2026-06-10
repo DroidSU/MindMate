@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.sujoy.mindmate.data.models.MoodLog
+import com.sujoy.mindmate.v1.data.models.MoodLog
 
 @Composable
 fun TimelineItem(log: MoodLog, isLastItem: Boolean) {

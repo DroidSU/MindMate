@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,7 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sujoy.mindmate.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
 import com.sujoy.mindmate.v1.utils.UtilityMethods.Companion.getMoodColor
 import com.sujoy.mindmate.v1.utils.UtilityMethods.Companion.getMoodEmoji
 

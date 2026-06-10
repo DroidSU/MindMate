@@ -20,13 +20,13 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.sujoy.mindmate.data.models.AppUiState
-import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
-import com.sujoy.mindmate.data.models.MoodsEnum
-import com.sujoy.mindmate.ui.designsystem.components.MindMateSectionHeader
-import com.sujoy.mindmate.ui.designsystem.components.MindMateTopBar
-import com.sujoy.mindmate.ui.designsystem.components.MoodSelector
-import com.sujoy.mindmate.ui.designsystem.theme.MindMateTheme
+import com.sujoy.mindmate.v1.data.models.AppUiState
+import com.sujoy.mindmate.v1.data.models.JournalAnalyzedDbModel
+import com.sujoy.mindmate.v1.data.models.MoodsEnum
+import com.sujoy.mindmate.v1.ui.designsystem.components.MindMateSectionHeader
+import com.sujoy.mindmate.v1.ui.designsystem.components.MindMateTopBar
+import com.sujoy.mindmate.v1.ui.designsystem.components.MoodSelector
+import com.sujoy.mindmate.v1.ui.designsystem.theme.MindMateTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

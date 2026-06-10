@@ -1,6 +1,6 @@
 package com.sujoy.mindmate.v1.data.repositories
 
-import com.sujoy.mindmate.data.models.JournalAnalyzedDbModel
+import com.sujoy.mindmate.v1.data.models.JournalAnalyzedDbModel
 
 interface MlModelRepository {
 
