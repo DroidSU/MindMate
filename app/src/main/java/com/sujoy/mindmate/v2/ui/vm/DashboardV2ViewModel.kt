@@ -22,21 +22,31 @@ class DashboardV2ViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManagerV2
 ) : ViewModel() {
 
-    private val _userName: MutableStateFlow<String> = MutableStateFlow("Sujoy")
+    private val _userName: MutableStateFlow<String> = MutableStateFlow("")
     val userName = _userName.asStateFlow()
+
+    private val _userId: MutableStateFlow<String> = MutableStateFlow("")
+    val userId = _userId.asStateFlow()
 
     private val _currentMood = MutableStateFlow<MoodV2?>(null)
     val currentMood: StateFlow<MoodV2?> = _currentMood.asStateFlow()
 
     init {
-        getCurrentMood()
+        getUserDetails()
     }
 
     private fun getCurrentMood() {
         viewModelScope.launch {
-            dataStoreManager.selectedMoodFlow.collect { mood ->
+            dataStoreManager.lastSelectedMood.collect { mood ->
                 _currentMood.value = mood
             }
+        }
+    }
+
+    private fun getUserDetails() {
+        viewModelScope.launch {
+            _userName.value = dataStoreManager.getUsername()
+            _userId.value = dataStoreManager.getUserId()
         }
     }
 
@@ -45,15 +55,14 @@ class DashboardV2ViewModel @Inject constructor(
             dataStoreManager.saveSelectedMood(mood)
             try {
                 val moodLog = MoodLog(
-                    id = mood.id.toLong(),
+                    id = UtilityMethodsV2.generateMoodLogId("11234"),
                     timestamp = System.currentTimeMillis(),
                     dateString = UtilityMethodsV2.getFormattedDate(
                         System.currentTimeMillis(),
                         "yyyy-MM-dd"
                     ),
                     mood = mood.moodString,
-                    moodScore = mood.graphValue.toInt(),
-                    emotionalTag = null
+                    moodScore = mood.graphValue,
                 )
                 databaseRepository.insertMoodLog(moodLog)
             } catch (ex: Exception) {

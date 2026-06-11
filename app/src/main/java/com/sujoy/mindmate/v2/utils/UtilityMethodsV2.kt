@@ -97,5 +97,12 @@ class UtilityMethodsV2 {
             calendar.set(Calendar.DAY_OF_YEAR, dayOfYear)
             return SimpleDateFormat("EEE", Locale.getDefault()).format(calendar.time)
         }
+
+        fun generateMoodLogId(userId: String): String {
+            val timestamp = System.currentTimeMillis()
+            val randomId = UUID.randomUUID().toString().take(8)
+            val combined = "M${timestamp}${userId}${randomId}j"
+            return hashString(combined)
+        }
     }
 }

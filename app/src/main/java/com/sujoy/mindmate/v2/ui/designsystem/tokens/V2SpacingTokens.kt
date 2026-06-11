@@ -14,4 +14,5 @@ object V2SpacingTokens {
     val Huge = 40.dp
     val ExtraHuge = 48.dp
     val Massive = 64.dp
+    val UnbelievableLarge = 75.dp
 }

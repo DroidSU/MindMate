@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -58,6 +60,7 @@ import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2ColorTokens
 import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2RadiusTokens
 import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2SpacingTokens
 import com.sujoy.mindmate.v2.ui.designsystem.tokens.V2TypographyTokens
+import com.sujoy.mindmate.v2.ui.views.components.MiloWithBubble
 
 @Composable
 fun V2DashboardScreen(
@@ -76,7 +79,7 @@ fun V2DashboardScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = V2SpacingTokens.ExtraHuge)
+                .padding(bottom = V2SpacingTokens.UnbelievableLarge)
         )
 
         // 2. FOREGROUND CONTENT LAYER
@@ -119,7 +122,11 @@ fun V2DashboardScreen(
                 // WELCOME TEXT
                 Text(
                     text = "Good evening, $userName 👋",
-                    style = V2TypographyTokens.BodyMuted.copy(fontSize = 13.sp),
+                    style = V2TypographyTokens.BodyMedium.copy(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = V2ColorTokens.DeepIndigo.copy(alpha = 0.7f)
+                    ),
                     modifier = Modifier.padding(horizontal = V2SpacingTokens.Medium)
                 )
 
@@ -133,28 +140,51 @@ fun V2DashboardScreen(
                     Text(
                         text = "You matter.\nAlways.",
                         style = V2TypographyTokens.HeroHeader,
-                        lineHeight = 36.sp,
-                        fontSize = 30.sp
+                        lineHeight = 38.sp,
+                        fontSize = 32.sp
                     )
-                    Spacer(modifier = Modifier.height(V2SpacingTokens.Small))
+                    Spacer(modifier = Modifier.height(V2SpacingTokens.ExtraSmall))
                     Text(
-                        text = "Let's understand your mind a little better today.",
-                        style = V2TypographyTokens.BodyMuted.copy(fontSize = 13.sp)
+                        text = "Nurture your inner calm.",
+                        style = V2TypographyTokens.BodyMedium.copy(
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = V2ColorTokens.DeepIndigo.copy(alpha = 0.6f)
+                        )
                     )
                 }
             }
 
             // 3. MOOD SELECTION CARD (Adaptive and Translucent)
-            MoodSelectionCard(
-                selectedMood = currentMood,
-                onMoodSelected = {
-                    setCurrentMood(it)
-                }
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = V2SpacingTokens.Small, vertical = V2SpacingTokens.Medium),
+                contentAlignment = Alignment.TopEnd
+            ) {
+                MoodSelectionCard(
+                    selectedMood = currentMood,
+                    onMoodSelected = {
+                        setCurrentMood(it)
+                    }
+                )
+
+                MiloWithBubble(
+                    modifier = Modifier
+                        .padding(end = V2SpacingTokens.Medium)
+                        .offset(y = (-130).dp),
+                    onBubbleClick = { /* TODO: Navigate to new Journal Screen */ }
+                )
+            }
         }
 
         // 5. FIXED BOTTOM NAVIGATION BAR
-        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .background(Color.White)
+                .navigationBarsPadding()
+        ) {
             DashboardBottomNavigation()
         }
     }
@@ -172,15 +202,15 @@ fun MoodSelectionCard(
     ) {
         Column(
             modifier = Modifier
-                .padding(top = V2SpacingTokens.Huge)
+                .padding(top = V2SpacingTokens.ExtraLarge)
                 .padding(horizontal = V2SpacingTokens.ExtraLarge)
-                .navigationBarsPadding() // Adapts to different navigation bar heights
-                .padding(bottom = 60.dp), // Extra padding to stay above the BottomNav
+                .navigationBarsPadding()
+                .padding(bottom = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(V2SpacingTokens.Small))
             Text(
-                text = "How are you feeling right now?",
+                text = "How are you feeling?",
                 style = V2TypographyTokens.HeadlineMedium.copy(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -240,7 +270,7 @@ fun MoodItem(
                     if (isSelected) Modifier
                         .background(
                             V2ColorTokens.LavenderLight.copy(alpha = 0.9f),
-                            RoundedCornerShape(16.dp)
+                            CircleShape
                         )
                         .border(1.5.dp, V2ColorTokens.LavenderAccent, RoundedCornerShape(16.dp))
                     else Modifier
@@ -250,16 +280,16 @@ fun MoodItem(
             Image(
                 painter = painterResource(id = mood.iconResId),
                 contentDescription = mood.moodString,
-                modifier = Modifier.size(32.dp),
-                contentScale = ContentScale.FillBounds
+                modifier = Modifier.size(38.dp),
+                contentScale = ContentScale.Crop
             )
         }
         Spacer(modifier = Modifier.height(V2SpacingTokens.ExtraSmall))
         Text(
             text = mood.moodString,
-            style = V2TypographyTokens.LabelLarge.copy(fontSize = 10.sp),
+            style = V2TypographyTokens.LabelLarge.copy(fontSize = 12.sp),
             color = if (isSelected) V2ColorTokens.DeepIndigo else V2ColorTokens.TextMuted,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Black
         )
     }
 }
@@ -285,10 +315,11 @@ fun BottomBannerCard() {
             )
             Spacer(modifier = Modifier.width(V2SpacingTokens.Small))
             Text(
-                text = "A small check-in today creates a big shift tomorrow.",
+                text = "Small check-ins, big shifts.",
                 style = V2TypographyTokens.BodyMedium.copy(
-                    fontSize = 11.sp,
-                    lineHeight = 15.sp
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 18.sp
                 ),
                 color = V2ColorTokens.TextSecondaryLight,
                 modifier = Modifier.weight(1f)
@@ -402,7 +433,7 @@ fun V2DashboardPreview() {
     MindMateV2Theme {
         V2DashboardScreen(
             userName = "Sujoy",
-            currentMood = MoodProviderV2.getMoodById(4),
+            currentMood = MoodProviderV2.getMoodById(-1),
             setCurrentMood = {}
         )
     }
